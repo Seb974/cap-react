@@ -1,0 +1,3 @@
+user_id,user_name,product_id,product_name,date,stock,quantity
+2,Seb,1,"Gateau Patate",08/03/2021,0,5
+2,Seb,2,Tiramisu,08/03/2021,1,5
