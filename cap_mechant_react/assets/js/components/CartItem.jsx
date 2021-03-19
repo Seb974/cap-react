@@ -35,7 +35,7 @@ const CartItem = ({ item }) => {
                     />
                 </td>
                 <td>
-                    <Field 
+                    <Field
                         name="quantity"
                         type="number"
                         label=" "

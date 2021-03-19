@@ -57,6 +57,8 @@ const Navbar = ({ history }) => {
                                 <div className="dropdown-divider"></div>
                                 <Link className="dropdown-item" to="/products">Produits</Link>
                                 <div className="dropdown-divider"></div>
+                                <Link className="dropdown-item" to="/suppliers">Fournisseurs</Link>
+                                <div className="dropdown-divider"></div>
                                 <Link className="dropdown-item" to="/users">Utilisateurs</Link>
                                 {/* <a className="dropdown-item" href="#">Something else here</a>
                                 <div className="dropdown-divider"></div>

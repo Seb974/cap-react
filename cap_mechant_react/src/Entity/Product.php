@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
@@ -57,9 +59,26 @@ class Product
 
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class)
-     * @Groups({"products_read"})
+     * @Groups({"products_read", "items_read"})
      */
     private $unit;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Supplier::class)
+     * @Groups({"products_read", "items_read"})
+     */
+    private $suppliers;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"products_read", "items_read"})
+     */
+    private $mainSupplierId;
+
+    public function __construct()
+    {
+        $this->suppliers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,6 +141,42 @@ class Product
     public function setUnit(?Unit $unit): self
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Supplier[]
+     */
+    public function getSuppliers(): Collection
+    {
+        return $this->suppliers;
+    }
+
+    public function addSupplier(Supplier $supplier): self
+    {
+        if (!$this->suppliers->contains($supplier)) {
+            $this->suppliers[] = $supplier;
+        }
+
+        return $this;
+    }
+
+    public function removeSupplier(Supplier $supplier): self
+    {
+        $this->suppliers->removeElement($supplier);
+
+        return $this;
+    }
+
+    public function getMainSupplierId(): ?int
+    {
+        return $this->mainSupplierId;
+    }
+
+    public function setMainSupplierId(?int $mainSupplierId): self
+    {
+        $this->mainSupplierId = $mainSupplierId;
 
         return $this;
     }

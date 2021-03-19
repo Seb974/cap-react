@@ -25,20 +25,20 @@ class Unit
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"products_read", "units_read"})
+     * @Groups({"products_read", "units_read", "items_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"products_read", "units_read"})
+     * @Groups({"products_read", "units_read", "items_read"})
      * @Assert\NotNull(message="Un nom est obligatoire.")
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"products_read", "units_read"})
+     * @Groups({"products_read", "units_read", "items_read"})
      * @Assert\NotNull(message="L'abréviation est obligatoire.")
      */
     private $shorthand;

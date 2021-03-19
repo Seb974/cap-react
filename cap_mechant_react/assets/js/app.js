@@ -26,6 +26,8 @@ import CartPage from './pages/Cart/CartPage';
 import ProfilePage from './pages/User/ProfilePage';
 import UnitPage from './pages/Unit/UnitPage';
 import UnitsPage from './pages/Unit/UnitsPage';
+import SupplierPage from './pages/Supplier/SupplierPage';
+import SuppliersPage from './pages/Supplier/SuppliersPage';
 
 AuthActions.setup();
 
@@ -66,6 +68,8 @@ const App = () => {
                             <PrivateRoute path="/categories" component={ CategoriesPage } />
                             <PrivateRoute path="/units/:id" component={ UnitPage } />
                             <PrivateRoute path="/units" component={ UnitsPage } />
+                            <PrivateRoute path="/suppliers/:id" component={ SupplierPage } />
+                            <PrivateRoute path="/suppliers" component={ SuppliersPage } />
                             <PrivateRoute path="/products/:id" component={ ProductPage} />
                             <PrivateRoute path="/products" component={ ProductsPage } />
                             <PrivateRoute path="/users/:id" component={ UserPage } />

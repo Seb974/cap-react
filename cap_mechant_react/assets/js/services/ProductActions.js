@@ -16,12 +16,12 @@ function find(id) {
                 .then(response => response.data);
 }
 
-function update(id, product) {
-    return axios.put('/api/products/' + id, {...product, category: `/api/categories/${ product.category }`})
+function update(id, product, suppliers) {
+    return axios.put('/api/products/' + id, {...product, category: `/api/categories/${ product.category }`, suppliers: suppliers.map(supplier => `/api/suppliers/${ supplier.id }`), unit: `/api/units/${ 1 }`})
 }
 
-function create(product) {
-    return axios.post('/api/products', {...product, category: `/api/categories/${ product.category }`, picture: null});
+function create(product, suppliers) {
+    return axios.post('/api/products', {...product, category: `/api/categories/${ product.category }`, suppliers: suppliers.map(supplier => `/api/suppliers/${ supplier.id }`), unit: `/api/units/${ 1 }`, picture: null});
 }
 
 export default { 

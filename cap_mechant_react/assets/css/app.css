@@ -113,6 +113,10 @@ main {
     border-radius: 5px;
 }
 
+.supplier-main-options {
+    display: flex;
+    align-items: center;
+}
 
 @media (max-width: 691px) {
     #footer { 

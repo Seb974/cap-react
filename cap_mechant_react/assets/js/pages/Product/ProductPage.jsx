@@ -4,14 +4,20 @@ import Field from '../../components/forms/Field';
 import Select from '../../components/forms/Select';
 import ProductActions from '../../services/ProductActions';
 import CategoryActions from '../../services/CategoryActions';
+import SupplierActions from '../../services/SupplierActions';
+import SupplierInput from '../../components/SupplierInput';
 
 const ProductPage = ({ match, history }) => {
 
     const { id = "new" } = match.params;
+    const defaultSupplier = {id: -1, name: ""};
     const [editing, setEditing] = useState(false);
-    const [product, setProduct] = useState({name: "", description: "", category: "", picture: ""});
-    const [errors, setErrors] = useState({name: "", description: "", category: "", picture: ""});
+    const [product, setProduct] = useState({name: "", description: "", category: "", picture: "", suppliers: "", mainSupplierId: 1});
+    const [errors, setErrors] = useState({name: "", description: "", category: "", picture: "", suppliers: ""});
     const [categories, setCategories] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
+    const [supplierOptions, setSupplierOptions] = useState([defaultSupplier]);
+    const [mainSupplier, setMainSupplier] = useState(0);
 
     useEffect(() => {
         fetchDatas(id);
@@ -21,8 +27,24 @@ const ProductPage = ({ match, history }) => {
         fetchDatas(id);
     }, [id]);
 
+    useEffect(() => {
+        if (suppliers !== null && suppliers !== undefined && suppliers.length > 0) {
+            let newSupplierOptions = [...supplierOptions];
+            let defaultOption = supplierOptions.findIndex(option => option.id === -1);
+            if (defaultOption !== -1) {
+                newSupplierOptions[defaultOption] = {id: suppliers[0].id, name: suppliers[0].name};
+                setSupplierOptions(newSupplierOptions);
+                setMainSupplier(suppliers[0].id);
+                setProduct(product => {
+                    return {...product, mainSupplierId: suppliers[0].id};
+                });
+            }
+        }
+    }, [suppliers, product]);
+
     const fetchDatas = async id => {
         let backEndCategories = categories.length === 0 ? await fetchCategories() : categories;
+        let backEndSuppliers = suppliers.length === 0 ? await fetchSuppliers() : suppliers;
         if (id !== "new") {
             setEditing(true);
             await fetchProduct(id);
@@ -30,16 +52,21 @@ const ProductPage = ({ match, history }) => {
             setProduct({
                 ...product, 
                 category: backEndCategories[0].id,
+                suppliers: []
             });
         }
     }
 
     const fetchProduct = async id => {
         try {
-            const { name, description, category } = await ProductActions.find(id);
-            setProduct({ name, description, category: category.id });
+            const backEndProduct = await ProductActions.find(id);
+            const backEndSuppliers = backEndProduct.suppliers === null || backEndProduct.suppliers === undefined || backEndProduct.suppliers.length === 0 ? supplierOptions : backEndProduct.suppliers.map(supplier => { return {id: supplier.id, name: supplier.name}});
+            setProduct({ ...backEndProduct, category: backEndProduct.category.id});
+            setSupplierOptions(backEndSuppliers);
+            if (backEndProduct.mainSupplierId !== null && backEndProduct.mainSupplierId !== undefined)
+                setMainSupplier(backEndProduct.mainSupplierId);
         } catch (error) {
-            console.log(response.error);
+            console.log(error);
             // TODO : Notification flash d'une erreur
             history.replace("/products");
         }
@@ -62,13 +89,62 @@ const ProductPage = ({ match, history }) => {
         return response;
     }
 
+    const fetchSuppliers = async () => {
+        let response = [];
+        try {
+            const data = await SupplierActions.findAll();
+            setSuppliers(data);
+            if (!product.suppliers) {
+                setProduct({...product, suppliers: data});
+            }
+            response = data;
+        } catch(error) {
+            console.log(error.response);
+            // TODO : Notification flash d'une erreur
+            history.replace("/products");
+        }
+        return response;
+    }
+
     const handleChange = ({ currentTarget }) => {
         setProduct({...product, [currentTarget.name]: currentTarget.value});
     }
 
+    const handleSupplierAdd = e => {
+        e.preventDefault();
+        if (supplierOptions.length < suppliers.length) {
+            let next = suppliers.findIndex(supplier => supplierOptions.find(selection => selection.id === supplier.id) === undefined);
+            setSupplierOptions(supplierOptions => {
+                return [...supplierOptions, {id: suppliers[next].id, name: suppliers[next].name}];
+            });
+        }
+    }
+
+    const handleSupplierChange = ({ currentTarget }) => {
+        let newSupplierOptions = [...supplierOptions];
+        let index = parseInt(currentTarget.name);
+        let newSupplier = suppliers.find(supplier => supplier.id === parseInt(currentTarget.value));
+        newSupplierOptions[index] = {id: newSupplier.id, name: newSupplier.name};
+        setSupplierOptions(newSupplierOptions);
+    }
+
+    const handleMainChange = (e, selectedMain) => {
+        let newMain = parseInt(selectedMain) !== parseInt(mainSupplier) ? selectedMain : 0;
+        setMainSupplier(newMain);
+        setProduct(product => {
+            return {...product, mainSupplierId: newMain};
+        })
+    }
+
+    const handleDeleteOption = ({ currentTarget }) => {
+        setSupplierOptions(supplierOptions => {
+            return supplierOptions.filter(option => option.id !== parseInt(currentTarget.name));
+        })
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        const request = !editing ? ProductActions.create(product) : ProductActions.update(id, product);
+        const request = !editing ? ProductActions.create(product, supplierOptions) : ProductActions.update(id, product, supplierOptions);
         request.then(response => {
                     setErrors({});
                     //TODO : Flash notification de succès
@@ -90,7 +166,6 @@ const ProductPage = ({ match, history }) => {
     return (
         <>
             <h1>{!editing ? "Créer un produit" : "Modifier '" + product.name + "'"}</h1>
-
             <form onSubmit={ handleSubmit }>
                 <Field
                     name="name"
@@ -103,6 +178,10 @@ const ProductPage = ({ match, history }) => {
                 <Select name="category" label="Catégorie" value={ product.category } error={ errors.category } onChange={ handleChange }>
                     { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
                 </Select>
+                <SupplierInput options={ supplierOptions } suppliers={ suppliers } main={ mainSupplier } errors={ errors } handleChange={ handleSupplierChange } handleMainChange={ handleMainChange } handleDeleteOption={ handleDeleteOption }/>
+                <div className="form-group mt-4">
+                    <button className="btn btn-warning" onClick={ handleSupplierAdd }>Ajouter un fournisseur</button>
+                </div>
                 <div className="form-group text-center">
                     <button type="submit" className="btn btn-success">Enregistrer</button>
                 </div>
