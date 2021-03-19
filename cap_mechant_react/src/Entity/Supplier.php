@@ -54,6 +54,16 @@ class Supplier
      */
     private $phone;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"suppliers_read", "products_read"})
+     * @Assert\Type(
+     *     type="bool",
+     *     message="{{ value }} n'est pas un {{ type }} valide."
+     * )
+     */
+    private $isInternal;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,6 +101,18 @@ class Supplier
     public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getIsInternal(): ?bool
+    {
+        return $this->isInternal;
+    }
+
+    public function setIsInternal(?bool $isInternal): self
+    {
+        $this->isInternal = $isInternal;
 
         return $this;
     }

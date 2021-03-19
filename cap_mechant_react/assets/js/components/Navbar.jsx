@@ -51,6 +51,8 @@ const Navbar = ({ history }) => {
                             <div className="dropdown-menu">
                                 <Link className="dropdown-item" to="/profile">Mes coordonnées</Link>
                                 <div className="dropdown-divider"></div>
+                                <Link className="dropdown-item" to="/orders">Mes commandes</Link>
+                                <div className="dropdown-divider"></div>
                                 <Link className="dropdown-item" to="/categories">Catégories</Link>
                                 <div className="dropdown-divider"></div>
                                 <Link className="dropdown-item" to="/units">Unités</Link>

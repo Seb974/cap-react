@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Field from '../../components/forms/Field';
 import Select from '../../components/forms/Select';
+import UnitActions from '../../services/UnitActions';
 import ProductActions from '../../services/ProductActions';
 import CategoryActions from '../../services/CategoryActions';
 import SupplierActions from '../../services/SupplierActions';
@@ -12,8 +13,9 @@ const ProductPage = ({ match, history }) => {
     const { id = "new" } = match.params;
     const defaultSupplier = {id: -1, name: ""};
     const [editing, setEditing] = useState(false);
-    const [product, setProduct] = useState({name: "", description: "", category: "", picture: "", suppliers: "", mainSupplierId: 1});
-    const [errors, setErrors] = useState({name: "", description: "", category: "", picture: "", suppliers: ""});
+    const [product, setProduct] = useState({name: "", description: "", category: "", picture: "", suppliers: "", unit: "", mainSupplierId: 1});
+    const [errors, setErrors] = useState({name: "", description: "", category: "", picture: "", suppliers: "", unit: ""});
+    const [units, setUnits] = useState([]);
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const [supplierOptions, setSupplierOptions] = useState([defaultSupplier]);
@@ -44,6 +46,7 @@ const ProductPage = ({ match, history }) => {
 
     const fetchDatas = async id => {
         let backEndCategories = categories.length === 0 ? await fetchCategories() : categories;
+        let backEndUnits = units.length === 0 ? await fetchUnits() : units;
         let backEndSuppliers = suppliers.length === 0 ? await fetchSuppliers() : suppliers;
         if (id !== "new") {
             setEditing(true);
@@ -52,6 +55,7 @@ const ProductPage = ({ match, history }) => {
             setProduct({
                 ...product, 
                 category: backEndCategories[0].id,
+                unit: backEndUnits[0].id,
                 suppliers: []
             });
         }
@@ -61,7 +65,7 @@ const ProductPage = ({ match, history }) => {
         try {
             const backEndProduct = await ProductActions.find(id);
             const backEndSuppliers = backEndProduct.suppliers === null || backEndProduct.suppliers === undefined || backEndProduct.suppliers.length === 0 ? supplierOptions : backEndProduct.suppliers.map(supplier => { return {id: supplier.id, name: supplier.name}});
-            setProduct({ ...backEndProduct, category: backEndProduct.category.id});
+            setProduct({ ...backEndProduct, category: backEndProduct.category.id, unit: backEndProduct.unit.id });
             setSupplierOptions(backEndSuppliers);
             if (backEndProduct.mainSupplierId !== null && backEndProduct.mainSupplierId !== undefined)
                 setMainSupplier(backEndProduct.mainSupplierId);
@@ -96,6 +100,23 @@ const ProductPage = ({ match, history }) => {
             setSuppliers(data);
             if (!product.suppliers) {
                 setProduct({...product, suppliers: data});
+            }
+            response = data;
+        } catch(error) {
+            console.log(error.response);
+            // TODO : Notification flash d'une erreur
+            history.replace("/products");
+        }
+        return response;
+    }
+
+    const fetchUnits = async () => {
+        let response = [];
+        try {
+            const data = await UnitActions.findAll();
+            setUnits(data);
+            if (!product.unit) {
+                setProduct({...product, unit: data[0].id});
             }
             response = data;
         } catch(error) {
@@ -175,9 +196,18 @@ const ProductPage = ({ match, history }) => {
                     placeholder="Nom du produit"
                     error={ errors.name }
                 />
-                <Select name="category" label="Catégorie" value={ product.category } error={ errors.category } onChange={ handleChange }>
-                    { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
-                </Select>
+                <div className="row">
+                    <div className="col-md-6">
+                        <Select name="category" label="Catégorie" value={ product.category } error={ errors.category } onChange={ handleChange }>
+                            { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
+                        </Select>
+                    </div>
+                    <div className="col-md-6">
+                        <Select name="unit" label="Unité" value={ product.unit } error={ errors.unit } onChange={ handleChange }>
+                            { units.map(unit => <option key={ unit.id } value={ unit.id }>{ unit.shorthand } - { unit.name }</option>) }
+                        </Select>
+                    </div>
+                </div>
                 <SupplierInput options={ supplierOptions } suppliers={ suppliers } main={ mainSupplier } errors={ errors } handleChange={ handleSupplierChange } handleMainChange={ handleMainChange } handleDeleteOption={ handleDeleteOption }/>
                 <div className="form-group mt-4">
                     <button className="btn btn-warning" onClick={ handleSupplierAdd }>Ajouter un fournisseur</button>

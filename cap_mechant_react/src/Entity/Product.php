@@ -75,6 +75,16 @@ class Product
      */
     private $mainSupplierId;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"products_read", "items_read"})
+     * @Assert\Type(
+     *     type="bool",
+     *     message="{{ value }} n'est pas un {{ type }} valide."
+     * )
+     */
+    private $isInternal;
+
     public function __construct()
     {
         $this->suppliers = new ArrayCollection();
@@ -177,6 +187,18 @@ class Product
     public function setMainSupplierId(?int $mainSupplierId): self
     {
         $this->mainSupplierId = $mainSupplierId;
+
+        return $this;
+    }
+
+    public function getIsInternal(): ?bool
+    {
+        return $this->isInternal;
+    }
+
+    public function setIsInternal(?bool $isInternal): self
+    {
+        $this->isInternal = $isInternal;
 
         return $this;
     }

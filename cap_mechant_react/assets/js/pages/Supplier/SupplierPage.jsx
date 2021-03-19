@@ -7,8 +7,8 @@ const SupplierPage = ({ match, history }) => {
 
     const { id = "new" } = match.params;
     const [editing, setEditing] = useState(false);
-    const [supplier, setSupplier] = useState({name: "", email: "", phone: ""});
-    const [errors, setErrors] = useState({name: "", email: "", phone: ""});
+    const [supplier, setSupplier] = useState({name: "", email: "", phone: "", isInternal: false});
+    const [errors, setErrors] = useState({name: "", email: "", phone: "", isInternal: ""});
 
     useEffect(() => {
         if (id !== "new") {
@@ -19,8 +19,8 @@ const SupplierPage = ({ match, history }) => {
 
     const fetchSupplier = async id => {
         try {
-            const { name, email, phone } = await SupplierActions.find(id);
-            setSupplier({ name, email, phone });
+            const { name, email, phone, isInternal } = await SupplierActions.find(id);
+            setSupplier({ name, email, phone, isInternal });
         } catch (error) {
             console.log(response.error);
             // TODO : Notification flash d'une erreur
@@ -30,6 +30,10 @@ const SupplierPage = ({ match, history }) => {
 
     const handleChange = ({ currentTarget }) => {
         setSupplier({...supplier, [currentTarget.name]: currentTarget.value});
+    }
+
+    const handleLinkChange = (e) => {
+        setSupplier({...supplier, isInternal: !supplier.isInternal})
     }
 
     const handleSubmit = (e) => {
@@ -75,15 +79,25 @@ const SupplierPage = ({ match, history }) => {
                     placeholder="Adresse email"
                     error={ errors.email }
                 />
-                <Field 
-                    name="phone"
-                    type="tel"
-                    label=" "
-                    value={ supplier.phone }
-                    onChange={ handleChange }
-                    placeholder="N° de téléphone"
-                    error={ errors.phone }
-                />
+                <div className="row">
+                    <div className="col-md-6">
+                        <Field 
+                            name="phone"
+                            type="tel"
+                            label=" "
+                            value={ supplier.phone }
+                            onChange={ handleChange }
+                            placeholder="N° de téléphone"
+                            error={ errors.phone }
+                        />
+                    </div>
+                    <div className="supplier-main-options col-md-6">
+                        <label>
+                            <input name="isInternal" type="checkbox" checked={ supplier.isInternal } onChange={ handleLinkChange } />
+                            <span className="ml-3 flex">Structure interne</span>
+                        </label>
+                    </div>
+                </div>
                 <div className="form-group text-center">
                     <button type="submit" className="btn btn-success">Enregistrer</button>
                 </div>

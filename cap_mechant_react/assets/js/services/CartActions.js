@@ -49,10 +49,39 @@ function getProductsFromIds(cart, products) {
     return cartItems.sort((a, b) => (a.product.id > b.product.id) ? 1 : -1);
 }
 
+function findAll() {
+    return axios
+        .get('/api/carts')
+        .then(response => response.data['hydra:member']);
+}
+
+function deletecart(id) {
+    return axios
+        .delete('/api/carts/' + id);
+}
+
+function find(id) {
+    return axios.get('/api/carts/' + id)
+                .then(response => response.data);
+}
+
+function update(id, cart) {
+    return axios.put('/api/carts/' + id, cart)
+}
+
+// function create(cart) {
+//     return axios.post('/api/carts', cart);
+// }
+
 export default {
     send,
     get,
     add,
     remove,
-    removeAll
+    removeAll, 
+    findAll,
+    find,
+    delete: deletecart,
+    update,
+    // create
 }

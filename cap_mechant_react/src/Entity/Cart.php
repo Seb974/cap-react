@@ -49,6 +49,12 @@ class Cart
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups({"carts_read"})
+     */
+    private $status;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -109,6 +115,18 @@ class Cart
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

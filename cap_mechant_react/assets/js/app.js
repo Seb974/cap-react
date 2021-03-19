@@ -26,6 +26,7 @@ import CartPage from './pages/Cart/CartPage';
 import ProfilePage from './pages/User/ProfilePage';
 import UnitPage from './pages/Unit/UnitPage';
 import UnitsPage from './pages/Unit/UnitsPage';
+import OrdersPage from './pages/Order/OrdersPage';
 import SupplierPage from './pages/Supplier/SupplierPage';
 import SuppliersPage from './pages/Supplier/SuppliersPage';
 
@@ -64,6 +65,7 @@ const App = () => {
                 <Navbar/>
                     <main className="container pt-5">
                         <Switch>
+                            <PrivateRoute path="/orders" component={ OrdersPage } />
                             <PrivateRoute path="/categories/:id" component={ CategoryPage } />
                             <PrivateRoute path="/categories" component={ CategoriesPage } />
                             <PrivateRoute path="/units/:id" component={ UnitPage } />
