@@ -9,17 +9,15 @@ const OrdersPage = (props) => {
     const [orders, setOrders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
+    const messages = {WAITING: "En Attente", CLOSE: "Terminé"};
 
-    const itemsPerPage = 2;
-    const filteredOrders = orders;  // .filter(order => order.status !== undefined && (order.status.toUpperCase()).includes(search.toUpperCase()) )
+    const itemsPerPage = 10;
+    const filteredOrders = orders.filter( order => ( messages[order.status].toUpperCase() ).includes(search.toUpperCase()) );
     const paginatedOrders = Pagination.getData(filteredOrders, currentPage, itemsPerPage);
 
     useEffect(() => {
         CartActions.findAll()
-                   .then(response => {
-                       setOrders(response);
-                       console.log(response);
-                })
+                   .then(response => setOrders(response))
                    .catch(error => console.log(error.response));
 
     }, []);
@@ -41,6 +39,10 @@ const OrdersPage = (props) => {
         setCurrentPage(1);
     }
 
+    const displayStatus = status => {
+        return messages[status];
+    }
+
     return (
         <>
             <div className="mb-3 d-flex justify-content-between align-items-center">
@@ -53,17 +55,20 @@ const OrdersPage = (props) => {
             <table className="table table-hover">
                 <thead>
                     <tr>
-                        <th>Nom</th>
-                        {/* <th>Diminutif</th> */}
+                        <th>Date</th>
+                        <th>Utilisateurs</th>
+                        <th>Statut</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     { paginatedOrders.length === 0 ? <tr><td colSpan="3">Aucune donnée à afficher.</td></tr> : paginatedOrders.map(order => {
-                         return (
+                        let date = new Date(order.deliveryDate);
+                        return (
                             <tr key={ order.id }>
-                                <td><Link to={"/orders/" + order.id}>{ Date(order.deliveryDate).toLocaleString() }</Link></td>
-                                {/* <td>{ order.status }</td> */}
+                                <td><Link to={"/orders/" + order.id}>{ (date.getDate() < 10 ? "0" : "") + date.getDate() + "/" + ((date.getMonth() + 1) < 10 ? "0" : "") + (date.getMonth() + 1) + "/" + date.getFullYear() }</Link></td>
+                                <td>{ order.user.name }</td>
+                                <td>{ displayStatus(order.status) }</td>
                                 <td>
                                     <button className="btn btn-sm btn-danger" onClick={() => handleDelete(order.id)}>Supprimer</button>
                                 </td>

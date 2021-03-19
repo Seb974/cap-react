@@ -62,7 +62,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=120, nullable=true)
      * @Assert\Length(min = 3, minMessage = "Le nom doit contenir au moins {{ limit }} caractères.")
-     * @Groups({"users_read"})
+     * @Groups({"users_read", "carts_read"})
      */
     private $name;
 

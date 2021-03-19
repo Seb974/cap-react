@@ -1,44 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Field from '../../components/forms/Field';
-import UnitActions from '../../services/UnitActions';
+import CartActions from '../../services/CartActions';
 
-const UnitPage = ({ match, history }) => {
+const OrderPage = ({ match, history }) => {
 
     const { id = "new" } = match.params;
     const [editing, setEditing] = useState(false);
-    const [unit, setUnit] = useState({name: "", shorthand: ""});
+    const [order, setOrder] = useState({name: "", shorthand: ""});
     const [errors, setErrors] = useState({name: "", shorthand: ""});
 
     useEffect(() => {
         if (id !== "new") {
             setEditing(true);
-            fetchUnit(id);
+            fetchOrder(id);
         }
     }, [id]);
 
-    const fetchUnit = async id => {
+    const fetchOrder = async id => {
         try {
-            const { name, shorthand } = await UnitActions.find(id);
-            setUnit({ name, shorthand });
+            const { name, shorthand } = await CartActions.find(id);
+            setOrder({ name, shorthand });
         } catch (error) {
             console.log(response.error);
             // TODO : Notification flash d'une erreur
-            history.replace("/units");
+            history.replace("/orders");
         }
     }
 
     const handleChange = ({ currentTarget }) => {
-        setUnit({...unit, [currentTarget.name]: currentTarget.value});
+        setOrder({...order, [currentTarget.name]: currentTarget.value});
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const request = !editing ? UnitActions.create(unit) : UnitActions.update(id, unit);
+        const request = !editing ? CartActions.create(order) : CartActions.update(id, order);
         request.then(response => {
                     setErrors({});
                     //TODO : Flash notification de succès
-                    history.replace("/units");
+                    history.replace("/orders");
                 })
                .catch( ({ response }) => {
                     const { violations } = response.data;
@@ -55,21 +55,21 @@ const UnitPage = ({ match, history }) => {
 
     return (
         <>
-            <h1>{!editing ? "Créer une unité" : "Modifier '" + unit.name + "'"}</h1>
+            <h1>{!editing ? "Créer une commande" : "Modifier '" + order.name + "'"}</h1>
 
             <form onSubmit={ handleSubmit }>
                 <Field 
                     name="name"
                     label="Nom"
-                    value={ unit.name }
+                    value={ order.name }
                     onChange={ handleChange }
-                    placeholder="Nom de l'unité"
+                    placeholder="Nom de la commande"
                     error={ errors.name }
                 />
                 <Field 
                     name="shorthand"
                     label="Diminutif"
-                    value={ unit.shorthand }
+                    value={ order.shorthand }
                     onChange={ handleChange }
                     placeholder="Diminutif"
                     error={ errors.shorthand }
@@ -79,10 +79,10 @@ const UnitPage = ({ match, history }) => {
                 </div>
             </form>
             <div className="row">
-                <Link to="/units" className="btn btn-link">Retour à la liste</Link>
+                <Link to="/orders" className="btn btn-link">Retour à la liste</Link>
             </div>
         </>
     );
 }
  
-export default UnitPage;
+export default OrderPage;
