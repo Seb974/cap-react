@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\CartRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CartRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
+//  * @ApiFilter(DateFilter::class, properties: ['deliveryDate'])
 /**
  * @ORM\Entity(repositoryClass=CartRepository::class)
  * @ApiResource(
@@ -20,6 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     collectionOperations={"GET", "POST"},
  *     itemOperations={"GET", "PUT", "PATCH", "DELETE"}
  * )
+ * @ApiFilter(DateFilter::class, properties={"deliveryDate"})
  */
 class Cart
 {

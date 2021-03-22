@@ -204,7 +204,7 @@ const ProductPage = ({ match, history }) => {
                     </div>
                     <div className="col-md-6">
                         <Select name="unit" label="Unité" value={ product.unit } error={ errors.unit } onChange={ handleChange }>
-                            { units.map(unit => <option key={ unit.id } value={ unit.id }>{ unit.shorthand } - { unit.name }</option>) }
+                            { units.map(unit => <option key={ unit.id } value={ unit.id }>{ unit.name } ({ unit.shorthand })</option>) }
                         </Select>
                     </div>
                 </div>

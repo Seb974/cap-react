@@ -6,12 +6,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CsvService
 {
+    private $publicFolder;
     private $fileName;
+    private $userFileName;
+    private $productFileName;
     private $delimiter;
 
-    public function __construct($fileName)
+    public function __construct($fileName, $publicFolder)
     {
         $this->fileName = $fileName;
+        $this->publicFolder = $publicFolder;
         $this->delimiter = ",";
     }
 
@@ -30,6 +34,22 @@ class CsvService
         finally {
             fclose($file);
         }
+    }
+
+    public function getUsersFromCsv()
+    {
+        $file = fopen($this->publicFolder . $this->fileName, 'r');
+        $lineNumber = 1;
+
+        while (($raw_string = fgets($file)) !== false)
+        {
+            $row = str_getcsv($raw_string);
+            // dump($row);
+            $lineNumber++;
+        }
+        // dump($lineNumber);
+        fclose($file);
+        return $lineNumber;
     }
 
     private function getOrderArray($order)

@@ -118,6 +118,10 @@ main {
     align-items: center;
 }
 
+.order-datepicker {
+    width: 33%!important;
+}
+
 @media (max-width: 691px) {
     #footer { 
         min-height: 931px;
@@ -138,3 +142,11 @@ main {
         padding-bottom: 325px;
     }
 }
+
+@media (max-width: 1024px) {
+    .order-datepicker {
+        width: 100%!important;
+    }
+}
+
+

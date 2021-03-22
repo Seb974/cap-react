@@ -55,6 +55,13 @@ function findAll() {
         .then(response => response.data['hydra:member']);
 }
 
+function findFromRange(from, to) {
+    console.log(`search from ${getStringDate(from)} to ${getStringDate(to)}`)
+    return axios
+        .get(`/api/carts?deliveryDate[strictly_after]=${ getStringDate(from) }&deliveryDate[strictly_before]=${ getStringDate(to) }`)
+        .then(response => response.data['hydra:member']);
+}
+
 function deletecart(id) {
     return axios
         .delete('/api/carts/' + id);
@@ -73,6 +80,14 @@ function update(id, cart) {
 //     return axios.post('/api/carts', cart);
 // }
 
+function getStringDate(date) {
+    return date.getFullYear() + "-" + getTwoDigits(date.getMonth() + 1) + "-" + getTwoDigits(date.getDate());
+}
+
+function getTwoDigits(number) {
+    return number < 10 ? '0' + number : number;
+}
+
 export default {
     send,
     get,
@@ -80,6 +95,7 @@ export default {
     remove,
     removeAll, 
     findAll,
+    findFromRange,
     find,
     delete: deletecart,
     update,
