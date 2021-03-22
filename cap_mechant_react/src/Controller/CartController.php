@@ -60,6 +60,7 @@ class CartController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $cart->setUser($user)
+             ->setStatus("WAITING")
              ->setDeliveryDate($datetime);
         $entityManager->persist($cart);
         $entityManager->flush();
