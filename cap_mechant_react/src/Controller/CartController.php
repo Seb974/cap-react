@@ -32,7 +32,7 @@ class CartController extends AbstractController
         $deliveryDate = is_string($date) ? new \DateTime($date) : $date;
         $cart = $this->createCartEntity($user, $deliveryDate);
         $this->createItemsEntities($data->get('items'), $cart, $productRepository);
-        $csvService->setInCsv($cart);
+        $csvService->setOrderInCsv($cart);
 
         return new JsonResponse($entitySerializer->serializeEntity($cart, 'cart'));
     }

@@ -41,6 +41,8 @@ services:
     
     App\Service\Serializer\CsvService:
         arguments: 
-            $fileName: '%env(ORDER_FILENAME)%'
+            $orderFileName: '%env(ORDER_FILENAME)%'
+            $userFileName: '%env(USER_FILENAME)%'
+            $productFileName: '%env(PRODUCT_FILENAME)%'
             $publicFolder: '%kernel.project_dir%/public/'
 

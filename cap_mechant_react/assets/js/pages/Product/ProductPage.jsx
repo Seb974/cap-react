@@ -180,7 +180,7 @@ const ProductPage = ({ match, history }) => {
                         });
                         setErrors(apiErrors);
                     }
-                     //TODO : Flash notification d'erreur
+                    //TODO : Flash notification d'erreur
                });
     }
 

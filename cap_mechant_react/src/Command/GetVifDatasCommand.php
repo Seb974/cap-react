@@ -24,31 +24,23 @@ class GetVifDatasCommand extends Command
 
     protected function configure()
     {
-        $this
-            ->setName(self::$defaultName)
-            ->setDescription(self::$defaultDescription)
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+        $this->setName(self::$defaultName)
+             ->setDescription(self::$defaultDescription)
+             ->addArgument('entity', InputArgument::OPTIONAL, 'Select only one entity to import : user or product (void for both)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $entity = $input->getArgument('entity');
 
-        // if ($arg1) {
-        //     $io->note(sprintf('You passed an argument: %s', $arg1));
-        // }
+        if (!$entity) {
+            $status = $this->csvService->getUsersFromCsv();
+        } else
+            $status = strtoupper($entity) == 'USER' ? $this->csvService->getUsersFromCsv() : $this->csvService->getUsersFromCsv();
 
-        // if ($input->getOption('option1')) {
-        //     // ...
-        // }
-        $newline = $this->csvService->getUsersFromCsv();
-
-        // $io->success('The first void line in your file is the number ' . $newline);
-
-        // return Command::SUCCESS;
-        return $newline;
+        $status == 0 ? $io->success("Les données ont bien été importées.") :
+                       $io->error("Une erreur est survenue. Veuillez réessayer ultérieurement.");
+        return $status;
     }
 }

@@ -13,7 +13,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
-//  * @ApiFilter(DateFilter::class, properties: ['deliveryDate'])
 /**
  * @ORM\Entity(repositoryClass=CartRepository::class)
  * @ApiResource(

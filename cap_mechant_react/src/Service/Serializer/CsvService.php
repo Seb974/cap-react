@@ -2,31 +2,35 @@
 
 namespace App\Service\Serializer;
 
-use Symfony\Component\HttpFoundation\Response;
+use App\Service\EntityRegister\UserRegister;
 
 class CsvService
 {
+    private $userRegister;
     private $publicFolder;
-    private $fileName;
+    private $orderFileName;
     private $userFileName;
     private $productFileName;
     private $delimiter;
 
-    public function __construct($fileName, $publicFolder)
+    public function __construct($orderFileName, $userFileName, $productFileName, $publicFolder, UserRegister $userRegister)
     {
-        $this->fileName = $fileName;
+        $this->userRegister = $userRegister;
+        $this->orderFileName = $orderFileName;
+        $this->userFileName = $userFileName;
+        $this->productFileName = $productFileName;
         $this->publicFolder = $publicFolder;
         $this->delimiter = ",";
     }
 
-    public function setInCsv($order)
+    public function setOrderInCsv($order)
     {
         try {
-            $file = fopen($this->fileName, 'a');
-            $line = $this->getFirstLine();
+            $file = fopen($this->orderFileName, 'a');
+            $line = $this->getFirstLine($this->orderFileName);
             $orderArray = $this->getOrderArray($order);
             if ($line == 1)
-                $this->setTitles($file);
+                $this->setHeader($file);
             foreach ($orderArray as $item) {
                 fputcsv($file, $item, $this->delimiter);
             }
@@ -38,18 +42,49 @@ class CsvService
 
     public function getUsersFromCsv()
     {
-        $file = fopen($this->publicFolder . $this->fileName, 'r');
+        $status = 0;
+        $header = [];
         $lineNumber = 1;
 
-        while (($raw_string = fgets($file)) !== false)
-        {
-            $row = str_getcsv($raw_string);
-            // dump($row);
-            $lineNumber++;
+        try {
+            $file = fopen($this->publicFolder . $this->userFileName, 'r');
+            while(($row = fgetcsv($file, 0, ";")) !== false)
+            {
+                if ($lineNumber <= 1) {
+                    $header = $this->getHeader($row);
+                } else {
+                    $this->userRegister->postUser($header, $row);
+                }
+                $lineNumber++;
+            }
+        } catch( \Exception $e) {
+            $status = 1;
+        } finally {
+            fclose($file);
+            return $status;
         }
-        // dump($lineNumber);
-        fclose($file);
-        return $lineNumber;
+    }
+
+    private function getHeader($row)
+    {
+        $header = [];
+        foreach ($row as $key => $value) {
+            $header[$value] = $key;
+        }
+        return $header;
+    }
+
+    private function setHeader($file)
+    {
+        fputcsv($file, [
+            'user_id',
+            'user_name',
+            'product_id',
+            'product_name',
+            'date',
+            'stock',
+            'quantity'
+        ], $this->delimiter);
     }
 
     private function getOrderArray($order)
@@ -71,21 +106,8 @@ class CsvService
         return $data;
     }
 
-    private function setTitles($file)
+    private function getFirstLine($fileName)
     {
-        fputcsv($file, [
-            'user_id',
-            'user_name',
-            'product_id',
-            'product_name',
-            'date',
-            'stock',
-            'quantity'
-        ], $this->delimiter);
-    }
-
-    private function getFirstLine()
-    {
-        return count(file($this->fileName, FILE_SKIP_EMPTY_LINES)) + 1;
+        return count(file($fileName, FILE_SKIP_EMPTY_LINES)) + 1;
     }
 }

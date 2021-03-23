@@ -1,0 +1,4 @@
+CODE CLIENT;LIBELLE;RAISON SOCIAL;ADRESSE 1;ADRESSE 2;CODE POSTAL;VILLE;PAYS;CLIENT BLOQUE;ID;EMAIL
+3;Herve;Herve;36 rue du Docteur Schweitzer, Saint-Louis, La Reunion, France;A l'etage;97421;Saint-Louis;Reunion;;12;herve.dumont@fraispei.re
+2;Didier;Didier;19 allee de Montaignac, Etang-Sale, La Reunion, France;;97427;Etang-Sale;Reunion;;11;didier.nicolas@capmechant.re
+1;Brice;Brice;19 chemin Raphael, Saint-Pierre, La Reunion, France;Rez-de-chaussee;97410;Saint-Pierre;Reunion;;8;bred.morel@gmail.com
