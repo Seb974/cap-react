@@ -55,10 +55,9 @@ function findAll() {
         .then(response => response.data['hydra:member']);
 }
 
-function findFromRange(from, to) {
-    console.log(`search from ${getStringDate(from)} to ${getStringDate(to)}`)
+function findFromRange(status, from, to) {
     return axios
-        .get(`/api/carts?deliveryDate[strictly_after]=${ getStringDate(from) }&deliveryDate[strictly_before]=${ getStringDate(to) }`)
+        .get(`/api/carts?status=${ status }&deliveryDate[strictly_after]=${ getStringDate(from) }&deliveryDate[strictly_before]=${ getStringDate(to) }`)
         .then(response => response.data['hydra:member']);
 }
 

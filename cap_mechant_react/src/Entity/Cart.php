@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 //  * @ApiFilter(DateFilter::class, properties: ['deliveryDate'])
 /**
@@ -24,6 +25,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
  *     itemOperations={"GET", "PUT", "PATCH", "DELETE"}
  * )
  * @ApiFilter(DateFilter::class, properties={"deliveryDate"})
+ * @ApiFilter(SearchFilter::class, properties={"status"="exact"})
  */
 class Cart
 {
