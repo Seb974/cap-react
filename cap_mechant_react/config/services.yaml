@@ -46,3 +46,13 @@ services:
             $productFileName: '%env(PRODUCT_FILENAME)%'
             $publicFolder: '%kernel.project_dir%/public/'
 
+    App\Service\EntityRegister\ProductRegister:
+        arguments: 
+            $defaultCategoryName: '%env(DEFAULT_CATEGORY_NAME)%'
+            $defaultUnitName: '%env(DEFAULT_UNIT_NAME)%'
+            $categorySelection: '%env(CATEGORY_SELECTION)%'
+            $unitSelection: '%env(UNIT_SELECTION)%'
+            $defaultSupplierName: '%env(DEFAULT_SUPPLIER_NAME)%'
+            $supplierSelection: '%env(SUPPLIER_SELECTION)%'
+
+

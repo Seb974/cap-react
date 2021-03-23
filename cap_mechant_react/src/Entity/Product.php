@@ -85,6 +85,12 @@ class Product
      */
     private $isInternal;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"products_read", "items_read"})
+     */
+    private $code;
+
     public function __construct()
     {
         $this->suppliers = new ArrayCollection();
@@ -199,6 +205,18 @@ class Product
     public function setIsInternal(?bool $isInternal): self
     {
         $this->isInternal = $isInternal;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }

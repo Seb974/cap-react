@@ -3,19 +3,22 @@
 namespace App\Service\Serializer;
 
 use App\Service\EntityRegister\UserRegister;
+use App\Service\EntityRegister\ProductRegister;
 
 class CsvService
 {
     private $userRegister;
+    private $productRegister;
     private $publicFolder;
     private $orderFileName;
     private $userFileName;
     private $productFileName;
     private $delimiter;
 
-    public function __construct($orderFileName, $userFileName, $productFileName, $publicFolder, UserRegister $userRegister)
+    public function __construct($orderFileName, $userFileName, $productFileName, $publicFolder, UserRegister $userRegister, ProductRegister $productRegister)
     {
         $this->userRegister = $userRegister;
+        $this->productRegister = $productRegister;
         $this->orderFileName = $orderFileName;
         $this->userFileName = $userFileName;
         $this->productFileName = $productFileName;
@@ -54,6 +57,31 @@ class CsvService
                     $header = $this->getHeader($row);
                 } else {
                     $this->userRegister->postUser($header, $row);
+                }
+                $lineNumber++;
+            }
+        } catch( \Exception $e) {
+            $status = 1;
+        } finally {
+            fclose($file);
+            return $status;
+        }
+    }
+
+    public function getProductsFromCsv()
+    {
+        $status = 0;
+        $header = [];
+        $lineNumber = 1;
+
+        try {
+            $file = fopen($this->publicFolder . $this->productFileName, 'r');
+            while(($row = fgetcsv($file, 0, ";")) !== false)
+            {
+                if ($lineNumber <= 1) {
+                    $header = $this->getHeader($row);
+                } else {
+                    $this->productRegister->postProduct($header, $row);
                 }
                 $lineNumber++;
             }

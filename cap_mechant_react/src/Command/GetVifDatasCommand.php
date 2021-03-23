@@ -36,8 +36,9 @@ class GetVifDatasCommand extends Command
 
         if (!$entity) {
             $status = $this->csvService->getUsersFromCsv();
+            $status = $this->csvService->getProductsFromCsv();
         } else
-            $status = strtoupper($entity) == 'USER' ? $this->csvService->getUsersFromCsv() : $this->csvService->getUsersFromCsv();
+            $status = strtoupper($entity) == 'USER' ? $this->csvService->getUsersFromCsv() : $this->csvService->getProductsFromCsv();
 
         $status == 0 ? $io->success("Les données ont bien été importées.") :
                        $io->error("Une erreur est survenue. Veuillez réessayer ultérieurement.");
