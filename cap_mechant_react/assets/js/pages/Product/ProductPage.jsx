@@ -16,8 +16,8 @@ const ProductPage = ({ match, history }) => {
     const defaultSupplier = {id: -1, name: ""};
     const userRoles = RoleActions.getRoles();
     const [editing, setEditing] = useState(false);
-    const [product, setProduct] = useState({name: "", description: "", category: "", picture: "", suppliers: "", unit: "", mainSupplierId: 1, userCategories: userRoles});
-    const [errors, setErrors] = useState({name: "", description: "", category: "", picture: "", suppliers: "", unit: "", userCategories: ""});
+    const [product, setProduct] = useState({name: "", code:"", description: "", category: "", picture: "", suppliers: "", unit: "", mainSupplierId: 1, userCategories: userRoles});
+    const [errors, setErrors] = useState({name: "", code:"", description: "", category: "", picture: "", suppliers: "", unit: "", userCategories: ""});
     const [units, setUnits] = useState([]);
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
@@ -198,14 +198,28 @@ const ProductPage = ({ match, history }) => {
         <>
             <h1>{!editing ? "Créer un produit" : "Modifier '" + product.name + "'"}</h1>
             <form onSubmit={ handleSubmit }>
-                <Field
-                    name="name"
-                    label="Nom"
-                    value={ product.name }
-                    onChange={ handleChange }
-                    placeholder="Nom du produit"
-                    error={ errors.name }
-                />
+                <div className="row">
+                    <div className="col-md-6">
+                        <Field
+                            name="name"
+                            label="Nom"
+                            value={ product.name }
+                            onChange={ handleChange }
+                            placeholder="Nom du produit"
+                            error={ errors.name }
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <Field
+                            name="code"
+                            label="Code article"
+                            value={ product.code }
+                            onChange={ handleChange }
+                            placeholder="Code article"
+                            error={ errors.name }
+                        />
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-md-6">
                         <Select name="category" label="Catégorie" value={ product.category } error={ errors.category } onChange={ handleChange }>

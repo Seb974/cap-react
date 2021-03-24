@@ -3,11 +3,13 @@
 namespace App\Service\Serializer;
 
 use App\Service\EntityRegister\UserRegister;
+use App\Service\EntityRegister\OrderRegister;
 use App\Service\EntityRegister\ProductRegister;
 
 class CsvService
 {
     private $userRegister;
+    private $orderRegister;
     private $productRegister;
     private $publicFolder;
     private $orderFileName;
@@ -15,9 +17,10 @@ class CsvService
     private $productFileName;
     private $delimiter;
 
-    public function __construct($orderFileName, $userFileName, $productFileName, $publicFolder, UserRegister $userRegister, ProductRegister $productRegister)
+    public function __construct($orderFileName, $userFileName, $productFileName, $publicFolder, UserRegister $userRegister, ProductRegister $productRegister, OrderRegister $orderRegister)
     {
         $this->userRegister = $userRegister;
+        $this->orderRegister = $orderRegister;
         $this->productRegister = $productRegister;
         $this->orderFileName = $orderFileName;
         $this->userFileName = $userFileName;
@@ -30,12 +33,13 @@ class CsvService
     {
         try {
             $file = fopen($this->orderFileName, 'a');
-            $line = $this->getFirstLine($this->orderFileName);
-            $orderArray = $this->getOrderArray($order);
-            if ($line == 1)
-                $this->setHeader($file);
-            foreach ($orderArray as $item) {
-                fputcsv($file, $item, $this->delimiter);
+            $internalItems = $this->orderRegister->getInternalItems($order);
+            foreach ($internalItems as $site => $items) {
+                $this->setHeader($file, $site, $order);
+                foreach ($items as $key => $item) {
+                    $formattedItem = $this->orderRegister->getFormattedRowItem($site, $order, $key, $item);
+                    fputcsv($file, $formattedItem, $this->delimiter);
+                }
             }
         } catch(\Exception $e) {}
         finally {
@@ -102,40 +106,9 @@ class CsvService
         return $header;
     }
 
-    private function setHeader($file)
+    private function setHeader($file, $site, $order)
     {
-        fputcsv($file, [
-            'user_id',
-            'user_name',
-            'product_id',
-            'product_name',
-            'date',
-            'stock',
-            'quantity'
-        ], $this->delimiter);
-    }
-
-    private function getOrderArray($order)
-    {
-        $data = [];
-        foreach ($order->getItems() as $item) {
-            $data[] = [
-                'userId' => $order->getUser()->getId(),
-                'userName' => $order->getUser()->getName(),
-                'productId' => $item->getProduct()->getId(),
-                'productName' => $item->getProduct()->getName(),
-                'date' => $order->getDeliveryDate()->format('d/m/Y'),
-                'stock' => $item->getStock(),
-                'stock_unit' => $item->getProduct()->getUnit()->getShorthand(),
-                'quantity' => $item->getQuantity(),
-                'qty_unit' => $item->getProduct()->getUnit()->getShorthand(),
-            ];
-        }
-        return $data;
-    }
-
-    private function getFirstLine($fileName)
-    {
-        return count(file($fileName, FILE_SKIP_EMPTY_LINES)) + 1;
+        $header = $this->orderRegister->getHeaderSite($site, $order);
+        fputcsv($file, $header, $this->delimiter);
     }
 }

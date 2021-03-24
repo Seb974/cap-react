@@ -53,6 +53,12 @@ class Item
      */
     private $cart;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Supplier::class)
+     * @Groups({"items_read", "carts_read"})
+     */
+    private $supplier;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -102,6 +108,18 @@ class Item
     public function setCart(?Cart $cart): self
     {
         $this->cart = $cart;
+
+        return $this;
+    }
+
+    public function getSupplier(): ?Supplier
+    {
+        return $this->supplier;
+    }
+
+    public function setSupplier(?Supplier $supplier): self
+    {
+        $this->supplier = $supplier;
 
         return $this;
     }

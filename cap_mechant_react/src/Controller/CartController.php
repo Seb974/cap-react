@@ -7,6 +7,7 @@ use App\Entity\Item;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\ProductRepository;
+use App\Repository\SupplierRepository;
 use App\Service\PostRequest\PostRequest;
 use App\Service\Serializer\CsvService;
 use App\Service\Serializer\SerializerService;
@@ -24,28 +25,30 @@ class CartController extends AbstractController
     /**
      * @Route("/order/new", name="new-order", methods={"POST"})
      */
-    public function add(Request $request, PostRequest $postRequest, UserRepository $userRepository, ProductRepository $productRepository, SerializerService $entitySerializer, CsvService $csvService): Response
+    public function add(Request $request, PostRequest $postRequest, UserRepository $userRepository, ProductRepository $productRepository, SupplierRepository $supplierRepository, SerializerService $entitySerializer, CsvService $csvService): Response
     {
         $data = $postRequest->getData($request);
         $date = $data->get('deliveryDate');
         $user = $userRepository->find($data->get('user')['id']);
         $deliveryDate = is_string($date) ? new \DateTime($date) : $date;
         $cart = $this->createCartEntity($user, $deliveryDate);
-        $this->createItemsEntities($data->get('items'), $cart, $productRepository);
+        $this->createItemsEntities($data->get('items'), $cart, $productRepository, $supplierRepository);
         $csvService->setOrderInCsv($cart);
 
         return new JsonResponse($entitySerializer->serializeEntity($cart, 'cart'));
     }
 
-    private function createItemsEntities(array $items, Cart $cart, ProductRepository $productRepository)
+    private function createItemsEntities(array $items, Cart $cart, ProductRepository $productRepository, SupplierRepository $supplierRepository)
     {
         $entityManager = $this->getDoctrine()->getManager();
         foreach ($items as $item) {
             $product = $productRepository->find($item['product']['id']);
+            $supplier = $supplierRepository->find($product->getMainSupplierId());
             $itemEntity = new Item();
             $itemEntity->setProduct($product)
-                 ->setQuantity($item['quantity'])
-                 ->setStock($item['stock']);
+                       ->setQuantity($item['quantity'])
+                       ->setStock($item['stock'])
+                       ->setSupplier($supplier);
             $entityManager->persist($itemEntity);
             $cart->addItem($itemEntity);
         }

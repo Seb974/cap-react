@@ -54,5 +54,8 @@ services:
             $unitSelection: '%env(UNIT_SELECTION)%'
             $defaultSupplierName: '%env(DEFAULT_SUPPLIER_NAME)%'
             $supplierSelection: '%env(SUPPLIER_SELECTION)%'
-
-
+    
+    App\Service\EntityRegister\OrderRegister:
+        arguments: 
+            $cLabo: '%env(CLABO)%'
+            $cocoCannelle: '%env(COCO_CANNELLE)%'

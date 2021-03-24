@@ -55,7 +55,8 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true) 
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups({"users_read", "carts_read"})
      */
     private $code;
 

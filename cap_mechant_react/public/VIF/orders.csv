@@ -1,3 +1,5 @@
-user_id,user_name,product_id,product_name,date,stock,quantity
-2,Seb,1,"Gateau Patate",08/03/2021,0,5
-2,Seb,2,Tiramisu,08/03/2021,1,5
+E,Brice,01,45,E00003,26/03/2021,24/03/2021
+L,Brice,01,45,1,95065B,4000,U
+L,Brice,01,45,2,10475A,5000,U
+E,Brice,02,45,E00003,26/03/2021,24/03/2021
+L,Brice,02,45,1,95064A,6000,U

@@ -21,8 +21,13 @@ function hasPrivileges(user)
     return ["ROLE_SUPER_ADMIN", "ROLE_ADMIN"].includes(user.roles);
 }
 
+function getDefaultRole() {
+    return "ROLE_USER";
+}
+
 export default {
     getRoles,
     filterRoles,
-    hasPrivileges
+    hasPrivileges,
+    getDefaultRole
 }

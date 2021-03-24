@@ -14,8 +14,8 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors, editin
     return (
         <>
             <div className="row"><h4>Contact</h4></div>
-            <div className="row mb-5">
-                <div className="col-md-4">
+            <div className="row mb-3">
+                <div className="col-md-6">
                     <Field 
                         name="name"
                         label=" "
@@ -25,7 +25,19 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors, editin
                         error={ errors.name }
                     />
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-6">
+                    <Field 
+                        name="code"
+                        label=" "
+                        value={ user.code }
+                        onChange={ handleUserChange }
+                        placeholder="Code client"
+                        error={ errors.code }
+                    />
+                </div>
+            </div>
+            <div className="row mb-5">
+                <div className="col-md-6">
                     <Field 
                         name="email"
                         type="email"
@@ -36,7 +48,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors, editin
                         error={ errors.email }
                     />
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-6">
                     <Field 
                         type="tel"
                         name="phone"

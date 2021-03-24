@@ -9,9 +9,9 @@ const UserPage = ({ history, match }) => {
     const { id = "new" } = match.params;
     const initialInformations =  AddressPanel.getInitialInformations();
     const [editing, setEditing] = useState(false);
-    const [user, setUser] = useState({name:"", email: "", password: "", confirmPassword: ""});
+    const [user, setUser] = useState({name:"", code:"", email: "", password: "", confirmPassword: ""});
     const [informations, setInformations] = useState(initialInformations);
-    const [errors, setErrors] = useState({name:"", email: "", password: "", confirmPassword: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
+    const [errors, setErrors] = useState({name:"", code:"", email: "", password: "", confirmPassword: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
 
     useEffect(() => {
         fetchUser(id);
@@ -64,18 +64,17 @@ const UserPage = ({ history, match }) => {
         e.preventDefault();
         const apiErrors = {};
         let request = null;
-        const { name, email, password, confirmPassword, metas } = user;
-
+        const { name, code, email, password, confirmPassword, metas } = user;
         if (!editing) {
             if (password !== confirmPassword) {
                 apiErrors.confirmPassword = "Les mots de passe saisis ne correspondent pas";
                 setErrors(apiErrors);
                 return ;
             }
-            request = UserActions.create({name, email, password, metas: {...informations}});
+            request = UserActions.create({name, code, email, password, metas: {...informations}});
         } else {
             const metadatas = metas === null || metas === undefined ? {...informations} : {id: metas.id, ...informations};
-            request = UserActions.update(id, {name, email, metas: metas}, metadatas);
+            request = UserActions.update(id, {name, code, email, metas: metas}, metadatas);
         }
         request.then(response => {
                     setErrors({});

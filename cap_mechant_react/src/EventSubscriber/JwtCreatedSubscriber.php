@@ -21,6 +21,7 @@ class JwtCreatedSubscriber {
         $data['id'] = $user->getId();
         $data['name'] = $user->getName();
         $data['email'] = $user->getEmail();
+        $data['code'] = $user->getCode();
         $data['metas'] = $this->serializer->serializeEntity($user->getMetas(), 'users_read');
 
         $event->setData($data);

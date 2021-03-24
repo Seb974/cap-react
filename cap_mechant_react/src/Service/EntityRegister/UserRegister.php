@@ -6,15 +6,18 @@ use App\Entity\User;
 use App\Entity\Meta;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UserRepository;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserRegister
 {
     private $em;
+    private $encoder;
     private $userRepository;
 
-    public function __construct(EntityManagerInterface $em, UserRepository $userRepository)
+    public function __construct(EntityManagerInterface $em, UserRepository $userRepository, UserPasswordEncoderInterface $encoder)
     {
         $this->em = $em;
+        $this->encoder = $encoder;
         $this->userRepository = $userRepository;
     }
 
@@ -28,9 +31,11 @@ class UserRegister
     private function createUser($header, $row)
     {
         $user = new User();
+        $clearPassword = implode("-", explode(" ", strtolower(trim($row[$header['LIBELLE']]))));
+        $hash = $this->encoder->encodePassword($user, $clearPassword);
         $user->setEmail(trim($row[$header['EMAIL']]))
              ->setRoles(['ROLE_USER'])
-             ->setPassword(trim($row[$header['EMAIL']]))
+             ->setPassword($hash)
              ->setCode(trim($row[$header['CODE CLIENT']]))
              ->setName(trim($row[$header['LIBELLE']]));
         $this->em->persist($user);

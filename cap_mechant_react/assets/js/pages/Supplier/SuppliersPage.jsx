@@ -10,7 +10,7 @@ const SuppliersPage = (props) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
 
-    const itemsPerPage = 2;
+    const itemsPerPage = 15;
     const filteredSuppliers = suppliers.filter(supplier => supplier.name !== undefined && (supplier.name.toUpperCase()).includes(search.toUpperCase()) )
     const paginatedSuppliers = Pagination.getData(filteredSuppliers, currentPage, itemsPerPage);
 

@@ -46,11 +46,11 @@ function isAuthenticated() {
 function getCurrentUser() {
     const token = window.localStorage.getItem("authToken");
     if (token) {
-        const { exp, id, name, roles, email, metas } = jwtDecode(token);
+        const { exp, id, name, code, roles, email, metas } = jwtDecode(token);
         if (exp * 1000 > new Date().getTime())
-            return {id, email, name, roles: RoleActions.filterRoles(roles), metas} ;
+            return {id, email, name, code, roles: RoleActions.filterRoles(roles), metas} ;
     }
-    return {id:-1, name: "", email: "", roles: "ROLE_USER", metas: null};
+    return {id:-1, name: "", code: "", email: "", roles: RoleActions.getDefaultRole(), metas: null};
 }
 
 export default {

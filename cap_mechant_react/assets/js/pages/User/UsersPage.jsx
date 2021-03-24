@@ -10,7 +10,7 @@ const UsersPage = (props) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
 
-    const itemsPerPage = 2;
+    const itemsPerPage = 15;
     const filteredUsers = users.filter(user => user.email.toLowerCase().startsWith(search.toLowerCase()) )
     const paginatedUsers = Pagination.getData(filteredUsers, currentPage, itemsPerPage);
 
@@ -50,6 +50,7 @@ const UsersPage = (props) => {
                 <thead>
                     <tr>
                         <th>Id</th>
+                        <th>Nom</th>
                         <th>Email</th>
                         <th></th>
                     </tr>
@@ -59,6 +60,7 @@ const UsersPage = (props) => {
                         return (
                             <tr key={ user.id }>
                                 <td>{ user.id }</td>
+                                <td><Link to={"/users/" + user.id}>{ user.name }</Link></td>
                                 <td><Link to={"/users/" + user.id}>{ user.email }</Link></td>
                                 <td>
                                     <button className="btn btn-sm btn-danger" onClick={() => handleDelete(user.id)}>Supprimer</button>

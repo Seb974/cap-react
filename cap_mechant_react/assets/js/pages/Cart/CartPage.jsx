@@ -17,7 +17,7 @@ const CartPage = ({ history }) => {
     const [date, setDate] = useState(today.getDay() !== 0 ? today : tomorrow);
     const [informations, setInformations] = useState(initialInformations);
     const [active, setActive] = useState("cart");
-    const [errors, setErrors] = useState({ name: '', email: '', phone: '', address: '', address2: '', zipcode: '', city: '', position: ''});
+    const [errors, setErrors] = useState({ name: '', code: '', email: '', phone: '', address: '', address2: '', zipcode: '', city: '', position: ''});
 
     useEffect(() => {
         if (currentUser.metas !== null && currentUser.metas !== undefined)
@@ -51,10 +51,8 @@ const CartPage = ({ history }) => {
         const numericCart = cart.map(item => { 
             return {...item, quantity: parseFloat(item.quantity), stock: parseFloat(item.stock)};
         });
-        console.log({cart: {...numericCart}, user: {...currentUser, metas: {...informations}}});
         CartActions.send(numericCart, currentUser, date)
                    .then(response => {
-                       console.log(response);
                        setCart(CartActions.removeAll());
                        history.push('/');
                     });
@@ -64,8 +62,6 @@ const CartPage = ({ history }) => {
         const newSelection = new Date(date[0].getFullYear(), date[0].getMonth(), date[0].getDate(), 9, 0, 0);
         setDate(newSelection);
     };
-
-    useEffect(() => {console.log(active)}, [active]);
 
     return (
         <>
