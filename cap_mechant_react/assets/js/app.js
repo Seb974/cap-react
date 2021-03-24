@@ -29,6 +29,7 @@ import UnitsPage from './pages/Unit/UnitsPage';
 import OrdersPage from './pages/Order/OrdersPage';
 import SupplierPage from './pages/Supplier/SupplierPage';
 import SuppliersPage from './pages/Supplier/SuppliersPage';
+import AdminRoute from './components/AdminRoute';
 
 AuthActions.setup();
 
@@ -55,7 +56,6 @@ const App = () => {
             CategoryActions.findAll()
                            .then(data => setCategories([allCategory,...data]));
         }
-        setTimeout(() => console.log(currentUser), 1000);
     }, [isAuthenticated]);
 
     return (
@@ -68,16 +68,16 @@ const App = () => {
                     <main className="container pt-5">
                         <Switch>
                             <PrivateRoute path="/orders" component={ OrdersPage } />
-                            <PrivateRoute path="/categories/:id" component={ CategoryPage } />
-                            <PrivateRoute path="/categories" component={ CategoriesPage } />
-                            <PrivateRoute path="/units/:id" component={ UnitPage } />
-                            <PrivateRoute path="/units" component={ UnitsPage } />
-                            <PrivateRoute path="/suppliers/:id" component={ SupplierPage } />
-                            <PrivateRoute path="/suppliers" component={ SuppliersPage } />
-                            <PrivateRoute path="/products/:id" component={ ProductPage} />
-                            <PrivateRoute path="/products" component={ ProductsPage } />
-                            <PrivateRoute path="/users/:id" component={ UserPage } />
-                            <PrivateRoute path="/users" component={ UsersPage } />
+                            <AdminRoute path="/categories/:id" component={ CategoryPage } />
+                            <AdminRoute path="/categories" component={ CategoriesPage } />
+                            <AdminRoute path="/units/:id" component={ UnitPage } />
+                            <AdminRoute path="/units" component={ UnitsPage } />
+                            <AdminRoute path="/suppliers/:id" component={ SupplierPage } />
+                            <AdminRoute path="/suppliers" component={ SuppliersPage } />
+                            <AdminRoute path="/products/:id" component={ ProductPage} />
+                            <AdminRoute path="/products" component={ ProductsPage } />
+                            <AdminRoute path="/users/:id" component={ UserPage } />
+                            <AdminRoute path="/users" component={ UsersPage } />
                             <PrivateRoute path="/cart" component={ CartPage } />
                             <PrivateRoute path="/profile" component={ ProfilePage } />
                             <Route path="/login" component={ LoginPage } />
