@@ -35,6 +35,12 @@ class Category
      */
     private $name;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @Groups({"categories_read", "products_read"})
+     */
+    private $userCategories = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -48,6 +54,18 @@ class Category
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getUserCategories(): ?array
+    {
+        return $this->userCategories;
+    }
+
+    public function setUserCategories(?array $userCategories): self
+    {
+        $this->userCategories = $userCategories;
 
         return $this;
     }

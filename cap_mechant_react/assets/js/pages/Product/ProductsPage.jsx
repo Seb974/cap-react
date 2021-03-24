@@ -10,7 +10,7 @@ const ProductsPage = (props) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
 
-    const itemsPerPage = 2;
+    const itemsPerPage = 15;
     const filteredProducts = products.filter(product => (product.name.toUpperCase()).includes(search.toUpperCase()) )
     const paginatedProducts = Pagination.getData(filteredProducts, currentPage, itemsPerPage);
 

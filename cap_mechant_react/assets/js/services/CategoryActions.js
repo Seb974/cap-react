@@ -17,11 +17,11 @@ function find(id) {
 }
 
 function update(id, category) {
-    return axios.put('/api/categories/' + id, category)
+    return axios.put('/api/categories/' + id, {...category, userCategories: category.userCategories.map(userCategory => userCategory.value)});
 }
 
 function create(category) {
-    return axios.post('/api/categories', category);
+    return axios.post('/api/categories', {...category, userCategories: category.userCategories.map(userCategory => userCategory.value)});
 }
 
 export default { 

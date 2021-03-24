@@ -45,7 +45,7 @@ const App = () => {
     
     useEffect(() => {
         setCurrentUser(AuthActions.getCurrentUser());
-        if (isAuthenticated)
+        if (isAuthenticated) {
             ProductActions.findAll()
                           .then(data => {
                                 setProducts(data);
@@ -54,6 +54,8 @@ const App = () => {
                         .catch(error => console.log(error.response));
             CategoryActions.findAll()
                            .then(data => setCategories([allCategory,...data]));
+        }
+        setTimeout(() => console.log(currentUser), 1000);
     }, [isAuthenticated]);
 
     return (

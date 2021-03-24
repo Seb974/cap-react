@@ -4,6 +4,7 @@ import CartContext from '../contexts/CartContext';
 import ProductsContext from '../contexts/ProductsContext';
 import AuthContext from '../contexts/AuthContext';
 import AuthActions from '../services/AuthActions';
+import RoleActions from '../services/RoleActions';
 
 const Navbar = ({ history }) => {
 
@@ -52,19 +53,23 @@ const Navbar = ({ history }) => {
                                 <Link className="dropdown-item" to="/profile">Mes coordonnées</Link>
                                 <div className="dropdown-divider"></div>
                                 <Link className="dropdown-item" to="/orders">Mes commandes</Link>
-                                <div className="dropdown-divider"></div>
-                                <Link className="dropdown-item" to="/categories">Catégories</Link>
-                                <div className="dropdown-divider"></div>
-                                <Link className="dropdown-item" to="/units">Unités</Link>
-                                <div className="dropdown-divider"></div>
-                                <Link className="dropdown-item" to="/products">Produits</Link>
-                                <div className="dropdown-divider"></div>
-                                <Link className="dropdown-item" to="/suppliers">Fournisseurs</Link>
-                                <div className="dropdown-divider"></div>
-                                <Link className="dropdown-item" to="/users">Utilisateurs</Link>
-                                {/* <a className="dropdown-item" href="#">Something else here</a>
-                                <div className="dropdown-divider"></div>
-                                <a className="dropdown-item" href="#">Separated link</a> */}
+                                { RoleActions.hasPrivileges(currentUser) &&
+                                    <>
+                                        <div className="dropdown-divider"></div>
+                                        <Link className="dropdown-item" to="/categories">Catégories</Link>
+                                        <div className="dropdown-divider"></div>
+                                        <Link className="dropdown-item" to="/units">Unités</Link>
+                                        <div className="dropdown-divider"></div>
+                                        <Link className="dropdown-item" to="/products">Produits</Link>
+                                        <div className="dropdown-divider"></div>
+                                        <Link className="dropdown-item" to="/suppliers">Fournisseurs</Link>
+                                        <div className="dropdown-divider"></div>
+                                        <Link className="dropdown-item" to="/users">Utilisateurs</Link>
+                                        {/* <a className="dropdown-item" href="#">Something else here</a>
+                                        <div className="dropdown-divider"></div>
+                                        <a className="dropdown-item" href="#">Separated link</a> */}
+                                    </>
+                                }
                             </div>
                         </li>
                         <li className="nav-item">

@@ -58,7 +58,8 @@ class ProductRegister
                 ->addSupplier($supplier)
                 ->setMainSupplierId($supplier->getId())
                 ->setIsInternal(true)
-                ->setCode(trim($row[$header['CODE']]));
+                ->setCode(trim($row[$header['CODE']]))
+                ->setUserCategories(["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]);
         $this->em->persist($product);
         return $product;
     }

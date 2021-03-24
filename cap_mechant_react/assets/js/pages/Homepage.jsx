@@ -26,18 +26,18 @@ const Homepage = (props) => {
     };
 
     return (
-            <>
-                <div className="row pt-5">
-                    <div className="col-md-4">
-                        <Select className="main-category-selector" name="category" label=" " value={ selectedCategory.id } onChange={ handleChange }>
-                            { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
-                        </Select>
-                    </div>
+        <>
+            <div className="row pt-5">
+                <div className="col-md-4">
+                    <Select className="main-category-selector" name="category" label=" " value={ selectedCategory.id } onChange={ handleChange }>
+                        { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
+                    </Select>
                 </div>
-                <div className="row pb-5">
-                    { displayedProducts.length === 0 ? <p className="ml-3">Aucun produit à afficher.</p> : displayedProducts.map(product => <ProductCard key={product.id} details={product}/>) }
-                </div>
-            </>
+            </div>
+            <div className="row pb-5">
+                { displayedProducts.length === 0 ? <p className="ml-3">Aucun produit à afficher.</p> : displayedProducts.map(product => <ProductCard key={product.id} details={product}/>) }
+            </div>
+        </>
     );
 }
  

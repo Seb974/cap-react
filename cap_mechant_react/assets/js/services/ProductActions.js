@@ -17,11 +17,24 @@ function find(id) {
 }
 
 function update(id, product, suppliers) {
-    return axios.put('/api/products/' + id, {...product, category: `/api/categories/${ product.category }`, suppliers: suppliers.map(supplier => `/api/suppliers/${ supplier.id }`), unit: `/api/units/${ product.unit }`})
+    return axios.put('/api/products/' + id,
+                    {...product,
+                        category: `/api/categories/${ product.category }`,
+                        suppliers: suppliers.map(supplier => `/api/suppliers/${ supplier.id }`),
+                        unit: `/api/units/${ product.unit }`,
+                        userCategories: product.userCategories.map(userCategory => userCategory.value)
+                    });
 }
 
 function create(product, suppliers) {
-    return axios.post('/api/products', {...product, category: `/api/categories/${ product.category }`, suppliers: suppliers.map(supplier => `/api/suppliers/${ supplier.id }`), unit: `/api/units/${ product.unit }`, picture: null});
+    return axios.post('/api/products', 
+                    {...product, 
+                        category: `/api/categories/${ product.category }`, 
+                        suppliers: suppliers.map(supplier => `/api/suppliers/${ supplier.id }`),
+                        unit: `/api/units/${ product.unit }`,
+                        userCategories: product.userCategories.map(userCategory => userCategory.value),
+                        picture: null
+                    });
 }
 
 export default { 

@@ -6,7 +6,6 @@ const LocationMarker = ({ position, initialPosition }) => {
 
     useEffect(() => {
         map.flyTo(position, 13 + (JSON.stringify(position) === JSON.stringify(initialPosition) ? 0 : 5));
-        console.log(position);
     }, [position])
 
     return position === null ? null : (

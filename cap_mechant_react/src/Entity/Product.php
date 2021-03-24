@@ -91,6 +91,12 @@ class Product
      */
     private $code;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @Groups({"products_read", "items_read"})
+     */
+    private $userCategories = [];
+
     public function __construct()
     {
         $this->suppliers = new ArrayCollection();
@@ -217,6 +223,18 @@ class Product
     public function setCode(?string $code): self
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    public function getUserCategories(): ?array
+    {
+        return $this->userCategories;
+    }
+
+    public function setUserCategories(?array $userCategories): self
+    {
+        $this->userCategories = $userCategories;
 
         return $this;
     }

@@ -7,14 +7,17 @@ import ProductActions from '../../services/ProductActions';
 import CategoryActions from '../../services/CategoryActions';
 import SupplierActions from '../../services/SupplierActions';
 import SupplierInput from '../../components/SupplierInput';
+import RoleActions from '../../services/RoleActions';
+import SelectMultiple from '../../components/forms/SelectMultiple';
 
 const ProductPage = ({ match, history }) => {
 
     const { id = "new" } = match.params;
     const defaultSupplier = {id: -1, name: ""};
+    const userRoles = RoleActions.getRoles();
     const [editing, setEditing] = useState(false);
-    const [product, setProduct] = useState({name: "", description: "", category: "", picture: "", suppliers: "", unit: "", mainSupplierId: 1});
-    const [errors, setErrors] = useState({name: "", description: "", category: "", picture: "", suppliers: "", unit: ""});
+    const [product, setProduct] = useState({name: "", description: "", category: "", picture: "", suppliers: "", unit: "", mainSupplierId: 1, userCategories: userRoles});
+    const [errors, setErrors] = useState({name: "", description: "", category: "", picture: "", suppliers: "", unit: "", userCategories: ""});
     const [units, setUnits] = useState([]);
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
@@ -65,7 +68,8 @@ const ProductPage = ({ match, history }) => {
         try {
             const backEndProduct = await ProductActions.find(id);
             const backEndSuppliers = backEndProduct.suppliers === null || backEndProduct.suppliers === undefined || backEndProduct.suppliers.length === 0 ? supplierOptions : backEndProduct.suppliers.map(supplier => { return {id: supplier.id, name: supplier.name}});
-            setProduct({ ...backEndProduct, category: backEndProduct.category.id, unit: backEndProduct.unit.id });
+            const backEndUserCategories = backEndProduct.userCategories === null || backEndProduct.userCategories === undefined ? userRoles : userRoles.filter(role => backEndProduct.userCategories.includes(role.value));
+            setProduct({ ...backEndProduct, userCategories: backEndUserCategories, category: backEndProduct.category.id, unit: backEndProduct.unit.id });
             setSupplierOptions(backEndSuppliers);
             if (backEndProduct.mainSupplierId !== null && backEndProduct.mainSupplierId !== undefined)
                 setMainSupplier(backEndProduct.mainSupplierId);
@@ -154,13 +158,19 @@ const ProductPage = ({ match, history }) => {
         setMainSupplier(newMain);
         setProduct(product => {
             return {...product, mainSupplierId: newMain};
-        })
+        });
     }
 
     const handleDeleteOption = ({ currentTarget }) => {
         setSupplierOptions(supplierOptions => {
             return supplierOptions.filter(option => option.id !== parseInt(currentTarget.name));
-        })
+        });
+    }
+
+    const handleUsersChange = (userCategories) => {
+        setProduct(product => {
+            return {...product, userCategories};
+        });
     }
 
     const handleSubmit = (e) => {
@@ -206,6 +216,11 @@ const ProductPage = ({ match, history }) => {
                         <Select name="unit" label="Unité" value={ product.unit } error={ errors.unit } onChange={ handleChange }>
                             { units.map(unit => <option key={ unit.id } value={ unit.id }>{ unit.name } ({ unit.shorthand })</option>) }
                         </Select>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6">
+                        <SelectMultiple name="userCategories" label="Pour les utilisateurs" value={ product.userCategories } error={ errors.userCategories } onChange={ handleUsersChange } data={ userRoles }/>
                     </div>
                 </div>
                 <SupplierInput options={ supplierOptions } suppliers={ suppliers } main={ mainSupplier } errors={ errors } handleChange={ handleSupplierChange } handleMainChange={ handleMainChange } handleDeleteOption={ handleDeleteOption }/>
