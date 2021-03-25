@@ -27,26 +27,26 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      * @Assert\NotBlank(message="Un nom est obligatoire.")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      * @Assert\NotNull(message="Une catégorie est obligatoire.")
      */
     private $category;
@@ -59,25 +59,25 @@ class Product
 
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      */
     private $unit;
 
     /**
      * @ORM\ManyToMany(targetEntity=Supplier::class)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      */
     private $suppliers;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      */
     private $mainSupplierId;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      * @Assert\Type(
      *     type="bool",
      *     message="{{ value }} n'est pas un {{ type }} valide."
@@ -87,13 +87,13 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="array", nullable=true)
-     * @Groups({"products_read", "items_read"})
+     * @Groups({"products_read", "items_read", "carts_read"})
      */
     private $userCategories = [];
 

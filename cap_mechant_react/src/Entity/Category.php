@@ -24,20 +24,20 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"categories_read", "products_read"})
+     * @Groups({"categories_read", "products_read", "items_read", "carts_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=120, nullable=true)
-     * @Groups({"categories_read", "products_read"})
+     * @Groups({"categories_read", "products_read", "items_read", "carts_read"})
      * @Assert\NotBlank(message="Un nom est obligatoire.")
      */
     private $name;
 
     /**
      * @ORM\Column(type="array", nullable=true)
-     * @Groups({"categories_read", "products_read"})
+     * @Groups({"categories_read", "products_read", "items_read", "carts_read"})
      */
     private $userCategories = [];
 

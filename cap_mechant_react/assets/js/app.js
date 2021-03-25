@@ -30,6 +30,7 @@ import OrdersPage from './pages/Order/OrdersPage';
 import SupplierPage from './pages/Supplier/SupplierPage';
 import SuppliersPage from './pages/Supplier/SuppliersPage';
 import AdminRoute from './components/AdminRoute';
+import OrderPage from './pages/Order/OrderPage';
 
 AuthActions.setup();
 
@@ -67,6 +68,7 @@ const App = () => {
                 <Navbar/>
                     <main className="container pt-5">
                         <Switch>
+                            <PrivateRoute path="/orders/:id" component={ OrderPage } />
                             <PrivateRoute path="/orders" component={ OrdersPage } />
                             <AdminRoute path="/categories/:id" component={ CategoryPage } />
                             <AdminRoute path="/categories" component={ CategoriesPage } />

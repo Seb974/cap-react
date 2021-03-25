@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Field = ({ name, label, value, onChange, placeholder = "", type = "text", error = "", required = false, id = "" }) => {
+const Field = ({ name, label, value, onChange, placeholder = "", type = "text", error = "", required = false, id = "", boots="", disabled=false }) => {
     return (
-        <div className="form-group">
+        <div className={"form-group " + boots }>
             <label htmlFor={ name }>{ label }</label>
             <input 
                 type={ type } 
@@ -13,6 +13,7 @@ const Field = ({ name, label, value, onChange, placeholder = "", type = "text", 
                 name={ name } 
                 id={ id || name }
                 required={ required }
+                disabled={ disabled }
             />
             { error && <p className="invalid-feedback">{ error }</p> }
         </div>
