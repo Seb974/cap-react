@@ -72,7 +72,9 @@ function find(id) {
 }
 
 function update(id, cart) {
-    return axios.put('/api/carts/' + id, cart)
+    return axios.put('/api/carts/' + id, {...cart, items: cart.items.map(item => { 
+        return {...item, supplier: `/api/suppliers/${ typeof item.supplier === 'object' && item.supplier !== null ? item.supplier.id : item.supplier }`};
+    })});
 }
 
 // function create(cart) {

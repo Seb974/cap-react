@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Field from "../../components/forms/Field";
 import Select from "../../components/forms/Select";
-import SupplierInput from "../../components/SupplierInput";
 import CartActions from "../../services/CartActions";
 
 const OrderPage = ({ match, history }) => {
@@ -50,9 +49,7 @@ const OrderPage = ({ match, history }) => {
           ...order.items.filter(item => item.id !== updatedItem.id), 
           {...updatedItem, supplier: currentTarget.value }
       ];
-      console.log(newItems);
       const sortedItems = newItems.sort((a, b) => (a.product.name > b.product.name) ? 1 : -1);
-      console.log(sortedItems);
       setOrder(order => {
         return {...order, items: sortedItems};
       })
@@ -133,10 +130,11 @@ const OrderPage = ({ match, history }) => {
             );
           })}
           <div className="form-group text-center">
-            <button type="submit" className="btn btn-warning">
-              Mettre à jour
-            </button>
+            <button type="submit" className="btn btn-warning">Valider</button>
           </div>
+          <div className="row">
+                <Link to="/orders" className="btn btn-link">Retour à la liste</Link>
+            </div>
         </form>
       )}
     </>
