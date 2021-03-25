@@ -59,8 +59,8 @@ security:
         - { path: ^/api/products, roles: ROLE_USER }
         - { path: ^/api/categories, roles: ROLE_USER }
         - { path: ^/api/units, roles: ROLE_ADMIN, methods: ['POST', 'PUT', 'PATCH', 'DELETE'] }
-        - { path: ^/api/users, roles: ROLE_ADMIN, methods: ['GET', 'PUT', 'PATCH', 'DELETE'] }
+       # - { path: ^/api/users, roles: ROLE_ADMIN, methods: ['GET', 'PUT', 'PATCH', 'DELETE'] }
         - { path: ^/api/suppliers, roles: ROLE_ADMIN, methods: ['POST', 'PUT', 'PATCH', 'DELETE'] }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        #- { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/profile, roles: ROLE_USER }
