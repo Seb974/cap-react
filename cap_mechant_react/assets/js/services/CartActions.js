@@ -1,5 +1,31 @@
 import axios from 'axios';
 
+function getStatus() {
+    return [
+        {value: "TOUS", label: "Tous"},
+        {value: "WAITING", label: "En attente"},
+        {value: "VALIDATED", label: "Validée"},
+        // {value: "CLOSED", label: "Terminée"}
+    ];
+}
+
+function getDefaultStatus() {
+    return "WAITING";
+}
+
+function getNextStatus(actualStatus) {
+    const status = getStatus();
+    const statusIndex = status.findIndex(state => state.value === actualStatus);
+    const i = statusIndex === status.length - 1 ? statusIndex : statusIndex + 1;
+    return status[i].value;
+}
+
+function isLastState(actualStatus) {
+    const status = getStatus();
+    const statusIndex = status.findIndex(state => state.value === actualStatus);
+    return statusIndex === status.length - 1;
+}
+
 function get(products) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     return getProductsFromIds(cart, products);
@@ -56,8 +82,11 @@ function findAll() {
 }
 
 function findFromRange(status, from, to) {
+    const query = status.toUpperCase() === "TOUS" ? 
+        `deliveryDate[strictly_after]=${ getStringDate(from) }&deliveryDate[strictly_before]=${ getStringDate(to) }` :
+        `status=${ status }&deliveryDate[strictly_after]=${ getStringDate(from) }&deliveryDate[strictly_before]=${ getStringDate(to) }`;
     return axios
-        .get(`/api/carts?status=${ status }&deliveryDate[strictly_after]=${ getStringDate(from) }&deliveryDate[strictly_before]=${ getStringDate(to) }`)
+        .get(`/api/carts?${ query }`)
         .then(response => response.data['hydra:member']);
 }
 
@@ -72,9 +101,21 @@ function find(id) {
 }
 
 function update(id, cart) {
-    return axios.put('/api/carts/' + id, {...cart, items: cart.items.map(item => { 
+    const nextStatus = getNextStatus(cart.status);
+    return axios.put('/api/carts/' + id, {...cart, status: nextStatus, items: cart.items.map(item => { 
         return {...item, supplier: `/api/suppliers/${ typeof item.supplier === 'object' && item.supplier !== null ? item.supplier.id : item.supplier }`};
     })});
+}
+
+function sendToOtherSupplier(id, cart) {
+    const nextStatus = getNextStatus(cart.status);
+    const newCart = {...cart, status: nextStatus, items: cart.items.map(item => {
+        return {...item, supplier: `/api/suppliers/${ typeof item.supplier === 'object' && item.supplier !== null ? item.supplier.id : item.supplier }`};
+    })};
+    console.log(newCart);
+    // return axios.put('/api/carts/' + id, {...cart, status: nextStatus, items: cart.items.map(item => { 
+    //     return {...item, supplier: `/api/suppliers/${ typeof item.supplier === 'object' && item.supplier !== null ? item.supplier.id : item.supplier }`};
+    // })});
 }
 
 // function create(cart) {
@@ -90,6 +131,9 @@ function getTwoDigits(number) {
 }
 
 export default {
+    getStatus,
+    isLastState,
+    getDefaultStatus,
     send,
     get,
     add,
@@ -100,5 +144,6 @@ export default {
     find,
     delete: deletecart,
     update,
+    sendToOtherSupplier
     // create
 }

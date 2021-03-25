@@ -8,13 +8,14 @@ import RangeDatePicker from '../../components/forms/RangeDatePicker';
 
 const OrdersPage = (props) => {
 
+    const today = new Date();
     const [orders, setOrders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
-    const [status, setStatus] = useState("WAITING");
-    const [minDate, setMinDate] = useState(new Date());
-    const [maxDate, setMaxDate] = useState(new Date());
-    const messages = {WAITING: "En Attente", VALIDATED: "Validée", CLOSED: "Terminé"};
+    const [status, setStatus] = useState("TOUS");
+    const [minDate, setMinDate] = useState(today);
+    const [maxDate, setMaxDate] = useState(today);
+    const messages = CartActions.getStatus();
 
     const itemsPerPage = 10;
     const filteredOrders = orders.filter( order => (order.user.name.toUpperCase().includes(search.toUpperCase())) );
@@ -25,7 +26,9 @@ const OrdersPage = (props) => {
     }, []);
 
     const fetchOrders = (status, min, max) => {
-        CartActions.findFromRange(status, min, max)
+        const minLimit = new Date(min.getFullYear(), min.getMonth(), min.getDate() -1, 23, 59, 59);
+        const maxLimit = new Date(max.getFullYear(), max.getMonth(), max.getDate(), 23, 59, 59);
+        CartActions.findFromRange(status, minLimit, maxLimit)
                    .then(response => {
                         setOrders(response);
                         setCurrentPage(1);
@@ -57,16 +60,14 @@ const OrdersPage = (props) => {
 
     const onDateChange = dates => {
         if (dates[1]) {
-            const min = new Date(dates[0].getFullYear(), dates[0].getMonth(), dates[0].getDate() - 1, 0, 0, 0);
-            const max = new Date(dates[1].getFullYear(), dates[1].getMonth(), dates[1].getDate() + 1, 23, 59, 0);
-            fetchOrders(status, min, max);
+            fetchOrders(status, dates[0], dates[1]);
             setMinDate(dates[0]);
             setMaxDate(dates[1]);
         }
     };
 
     const displayStatus = status => {
-        return messages[status];
+        return (messages.find(statusObject => statusObject.value === status)).label;
     }
 
     return (
@@ -84,7 +85,7 @@ const OrdersPage = (props) => {
                 </div>
                 <div className="col-md-6 ">
                     <Select name="status" label="Statut" value={ status } onChange={ handleStatusChange }>
-                        { Object.values(messages).map((message, index) => <option key={ index } value={ Object.keys(messages)[index] }>{ message } </option>) }
+                        { messages.map((message, index) => <option key={ index } value={ message.value }>{ message.label } </option>) }
                     </Select>
                 </div>
             </div>
@@ -92,8 +93,9 @@ const OrdersPage = (props) => {
             <table className="table table-hover">
                 <thead>
                     <tr>
+                        <th>N° Commande</th>
+                        <th>Client</th>
                         <th>Date</th>
-                        <th>Utilisateurs</th>
                         <th>Statut</th>
                         <th></th>
                     </tr>
@@ -103,8 +105,9 @@ const OrdersPage = (props) => {
                         let date = new Date(order.deliveryDate);
                         return (
                             <tr key={ order.id }>
-                                <td><Link to={"/orders/" + order.id}>{ (date.getDate() < 10 ? "0" : "") + date.getDate() + "/" + ((date.getMonth() + 1) < 10 ? "0" : "") + (date.getMonth() + 1) + "/" + date.getFullYear() }</Link></td>
-                                <td>{ order.user.name }</td>
+                                <td><Link to={"/orders/" + order.id}>{ order.id.toString().padStart(10, '0') }</Link></td>
+                                <td><Link to={"/orders/" + order.id}>{ order.user.name }</Link></td>
+                                <td>{ (date.getDate() < 10 ? "0" : "") + date.getDate() + "/" + ((date.getMonth() + 1) < 10 ? "0" : "") + (date.getMonth() + 1) + "/" + date.getFullYear() }</td>
                                 <td>{ displayStatus(order.status) }</td>
                                 <td>
                                     <button className="btn btn-sm btn-danger" onClick={() => handleDelete(order.id)}>Supprimer</button>
