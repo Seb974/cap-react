@@ -25,26 +25,26 @@ class Item
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"items_read", "carts_read"})
+     * @Groups({"items_read", "carts_read", "put_order"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class)
-     * @Groups({"items_read", "carts_read"})
+     * @Groups({"items_read", "carts_read", "put_order"})
      * @Assert\NotNull(message="Un produit est obligatoire.")
      */
     private $product;
 
     /**
      * @ORM\Column(type="float", nullable=true)
-     * @Groups({"items_read", "carts_read"})
+     * @Groups({"items_read", "carts_read", "put_order"})
      */
     private $quantity;
 
     /**
      * @ORM\Column(type="float", nullable=true)
-     * @Groups({"items_read", "carts_read"})
+     * @Groups({"items_read", "carts_read", "put_order"})
      */
     private $stock;
 
@@ -55,7 +55,7 @@ class Item
 
     /**
      * @ORM\ManyToOne(targetEntity=Supplier::class)
-     * @Groups({"items_read", "carts_read"})
+     * @Groups({"items_read", "carts_read", "put_order"})
      */
     private $supplier;
 

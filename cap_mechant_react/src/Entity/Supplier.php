@@ -25,27 +25,27 @@ class Supplier
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read"})
+     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read", "put_order"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read"})
+     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read", "put_order"})
      * @Assert\NotBlank(message="Un nom est obligatoire.")
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=120, nullable=true)
-     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read"})
+     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read", "put_order"})
      * @Assert\Email(message="L'adresse email saisie n'est pas valide.")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
-     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read"})
+     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read", "put_order"})
      * @Assert\Regex(
      *     pattern="/^(?:(?:\+|00)262|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/",
      *     match=true,
@@ -56,7 +56,7 @@ class Supplier
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
-     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read"})
+     * @Groups({"suppliers_read", "products_read", "items_read", "carts_read", "put_order"})
      * @Assert\Type(
      *     type="bool",
      *     message="{{ value }} n'est pas un {{ type }} valide."

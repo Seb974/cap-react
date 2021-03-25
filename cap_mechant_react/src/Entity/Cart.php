@@ -16,7 +16,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 /**
  * @ORM\Entity(repositoryClass=CartRepository::class)
  * @ApiResource(
- *     denormalizationContext={"disable_type_enforcement"=true},
+ *     denormalizationContext={
+ *          "disable_type_enforcement"=true,
+ *          "groups"={"put_order"}
+ *     },
  *     normalizationContext={
  *          "groups"={"carts_read"}
  *     },
@@ -32,19 +35,19 @@ class Cart
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"carts_read"})
+     * @Groups({"carts_read", "put_order" })
      */
     private $id;
 
     /**
      * @ORM\OneToMany(targetEntity=Item::class, mappedBy="cart")
-     * @Groups({"carts_read"})
+     * @Groups({"carts_read", "put_order"})
      */
     private $items;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"carts_read"})
+     * @Groups({"carts_read", "put_order"})
      */
     private $deliveryDate;
 
@@ -56,7 +59,7 @@ class Cart
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
-     * @Groups({"carts_read"})
+     * @Groups({"carts_read", "put_order"})
      */
     private $status;
 
