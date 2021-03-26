@@ -1,0 +1,8 @@
+/.env
+/.env.local
+/config/jwt/*
+/node_modules
+/public/build/*
+public/bundles/*
+/var
+/vendor
