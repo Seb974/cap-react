@@ -6,7 +6,7 @@ import CartActions from "../../services/CartActions";
 const OrderPage = ({ match, history }) => {
     const { id = "new" } = match.params;
     const [editing, setEditing] = useState(false);
-    const [order, setOrder] = useState({ id:0, items: [], deliveryDate: new Date(), user: {name: "unknown"}, status: CartActions.getDefaultStatus() });
+    const [order, setOrder] = useState({ id:0, items: [], deliveryDate: new Date(), user: {name: ""}, status: CartActions.getDefaultStatus() });
     const [selection, setSelection] = useState([]);
     const [originalSupplier, setOriginalSupplier] = useState([]);
     const [errors, setErrors] = useState([]);
@@ -55,8 +55,12 @@ const OrderPage = ({ match, history }) => {
         setOrder(order => {
             return {...order, items: newItems.sort((a, b) => (a.product.name > b.product.name) ? 1 : -1)};
         });
-        if (isLastState && originalSupplier.find(item => item.id === updatedItem.id).supplier !== currentTarget.value)
-            setSelection([...selection, updatedItem.id]);
+        if (isLastState) {
+            if (parseInt(originalSupplier.find(item => item.id === updatedItem.id).supplier) !== parseInt(currentTarget.value))
+                setSelection([...selection, updatedItem.id]);
+            else if (selection.includes(updatedItem.id))
+                setSelection(selection.filter(item => item !== updatedItem.id));
+        }
     }
 
     const handleSubmit = (e) => {
