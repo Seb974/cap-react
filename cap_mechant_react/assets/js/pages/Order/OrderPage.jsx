@@ -67,22 +67,22 @@ const OrderPage = ({ match, history }) => {
         e.preventDefault();
         const request = !editing ? CartActions.create(order) : 
                         isLastState && selection.length > 0 ? 
-                            CartActions.sendToOtherSupplier(id, {...order, items: order.items.filter(item => selection.includes(item.id))}) : 
+                            CartActions.sendToOtherSupplier(id, order, selection) :
                             CartActions.update(id, order);
-        // request.then((response) => {
-        //           setErrors({});
-        //           //TODO : Flash notification de succès
-        //           history.replace("/orders");
-        //       })
-        //       .catch(({ response }) => {
-        //           const { violations } = response.data;
-        //           if (violations) {
-        //               const apiErrors = {};
-        //               violations.forEach(({ propertyPath, message }) => apiErrors[propertyPath] = message);
-        //               setErrors(apiErrors);
-        //           }
-        //           //TODO : Flash notification d'erreur
-        //       });
+        request.then((response) => {
+                  setErrors({});
+                  //TODO : Flash notification de succès
+                  history.replace("/orders");
+              })
+              .catch(({ response }) => {
+                  const { violations } = response.data;
+                  if (violations) {
+                      const apiErrors = {};
+                      violations.forEach(({ propertyPath, message }) => apiErrors[propertyPath] = message);
+                      setErrors(apiErrors);
+                  }
+                  //TODO : Flash notification d'erreur
+              });
     };
 
     const handleCheckItem = ({ currentTarget }) => {

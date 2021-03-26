@@ -52,7 +52,7 @@ const Navbar = ({ history }) => {
                             <div className="dropdown-menu">
                                 <Link className="dropdown-item" to="/profile">Mes coordonnées</Link>
                                 <div className="dropdown-divider"></div>
-                                <Link className="dropdown-item" to="/orders">Mes commandes</Link>
+                                <Link className="dropdown-item" to="/orders">{ RoleActions.hasPrivileges(currentUser) ? "Commandes" : "Mes commandes" }</Link>
                                 { RoleActions.hasPrivileges(currentUser) &&
                                     <>
                                         <div className="dropdown-divider"></div>

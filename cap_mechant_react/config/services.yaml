@@ -59,3 +59,11 @@ services:
         arguments: 
             $cLabo: '%env(CLABO)%'
             $cocoCannelle: '%env(COCO_CANNELLE)%'
+    
+    App\Service\Email\Email:
+        arguments: 
+            $sender: '%env(EMAIL_SENDER)%'
+    
+    App\EventSubscriber\OrderSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }

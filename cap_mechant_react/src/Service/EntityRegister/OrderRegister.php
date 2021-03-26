@@ -2,14 +2,19 @@
 
 namespace App\Service\EntityRegister;
 
+use App\Entity\Cart;
+use App\Repository\CartRepository;
+
 class OrderRegister
 {
     private $cLabo;
     private $cocoCannelle;
+    private $cartRepository;
 
-    public function __construct($cLabo, $cocoCannelle) {
+    public function __construct($cLabo, $cocoCannelle, CartRepository $cartRepository) {
         $this->cLabo = $cLabo;
         $this->cocoCannelle = $cocoCannelle;
+        $this->cartRepository = $cartRepository;
     }
 
     public function getInternalItems($order)
@@ -52,5 +57,30 @@ class OrderRegister
             $item->getQuantity() * 1000,
             strtoupper($item->getProduct()->getUnit()->getShorthand())
         ];
+    }
+
+    public function getSuppliersOrder($items)
+    {
+        $groupedOrders = [];
+        foreach ($items as $item) {
+            $supplier = $item->getSupplier();
+            if ($supplier->getIsInternal() == null || $supplier->getIsInternal() == false) {
+                $key = $this->getSupplierArray($supplier, $groupedOrders);
+                if ($key)
+                    $groupedOrders[$key][] = $item;
+                else
+                    $groupedOrders[$supplier->getId()][] = $item;
+            }
+        }
+        return $groupedOrders;
+    }
+
+    private function getSupplierArray($supplier, $groupedOrders)
+    {
+        foreach ($groupedOrders as $key => $value) {
+            if ($key === $supplier->getId())
+                return $key;
+        }
+        return null;
     }
 }

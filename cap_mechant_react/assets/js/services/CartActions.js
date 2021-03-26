@@ -102,20 +102,16 @@ function find(id) {
 
 function update(id, cart) {
     const nextStatus = getNextStatus(cart.status);
-    return axios.put('/api/carts/' + id, {...cart, status: nextStatus, items: cart.items.map(item => { 
+    return axios.put('/api/carts/' + id, {...cart, sendingNumber: (cart.sendingNumber + 1), status: nextStatus, items: cart.items.map(item => { 
         return {...item, supplier: `/api/suppliers/${ typeof item.supplier === 'object' && item.supplier !== null ? item.supplier.id : item.supplier }`};
     })});
 }
 
-function sendToOtherSupplier(id, cart) {
-    const nextStatus = getNextStatus(cart.status);
-    const newCart = {...cart, status: nextStatus, items: cart.items.map(item => {
-        return {...item, supplier: `/api/suppliers/${ typeof item.supplier === 'object' && item.supplier !== null ? item.supplier.id : item.supplier }`};
-    })};
-    console.log(newCart);
-    // return axios.put('/api/carts/' + id, {...cart, status: nextStatus, items: cart.items.map(item => { 
-    //     return {...item, supplier: `/api/suppliers/${ typeof item.supplier === 'object' && item.supplier !== null ? item.supplier.id : item.supplier }`};
-    // })});
+function sendToOtherSupplier(id, cart, items) {
+    update(id, cart).then(response => {
+        return axios.post('/api/order/notify', { id: cart.id, selectedItems : items })
+                    .then(r => response);
+    });
 }
 
 // function create(cart) {

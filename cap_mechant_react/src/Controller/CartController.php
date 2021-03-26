@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Cart;
 use App\Entity\Item;
 use App\Entity\User;
+use App\Service\Email\Email;
 use App\Repository\UserRepository;
+use App\Repository\CartRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SupplierRepository;
 use App\Service\PostRequest\PostRequest;
@@ -16,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\EntityRegister\OrderRegister;
 
 /**
  * @Route("/api")
@@ -25,21 +28,43 @@ class CartController extends AbstractController
     /**
      * @Route("/order/new", name="new-order", methods={"POST"})
      */
-    public function add(Request $request, PostRequest $postRequest, UserRepository $userRepository, ProductRepository $productRepository, SupplierRepository $supplierRepository, SerializerService $entitySerializer, CsvService $csvService): Response
+    public function add(Request $request, PostRequest $postRequest, UserRepository $userRepository, ProductRepository $productRepository, SupplierRepository $supplierRepository, SerializerService $entitySerializer, CsvService $csvService, OrderRegister $orderRegister): Response
     {
         $data = $postRequest->getData($request);
         $date = $data->get('deliveryDate');
         $user = $userRepository->find($data->get('user')['id']);
         $deliveryDate = is_string($date) ? new \DateTime($date) : $date;
-        $cart = $this->createCartEntity($user, $deliveryDate);
-        $this->createItemsEntities($data->get('items'), $cart, $productRepository, $supplierRepository);
-        $csvService->setOrderInCsv($cart);
+        $items = $this->createItemsEntities($data->get('items'), $productRepository, $supplierRepository);
+        $cart = $this->createCartEntity($user, $deliveryDate, $items);
 
         return new JsonResponse($entitySerializer->serializeEntity($cart, 'cart'));
     }
 
-    private function createItemsEntities(array $items, Cart $cart, ProductRepository $productRepository, SupplierRepository $supplierRepository)
+    /**
+     * @Route("/order/notify", name="order-notify", methods={"POST"})
+     */
+    public function notify(Request $request, PostRequest $postRequest, CartRepository $cartRepository, ProductRepository $productRepository, SupplierRepository $supplierRepository, SerializerService $entitySerializer, CsvService $csvService, OrderRegister $orderRegister, Email $mailer): Response
     {
+        $itemsToNotify = [];
+        $data = $postRequest->getData($request);
+        $selectedItems = $data->get('selectedItems');
+        $cart = $cartRepository->find($data->get('id'));
+
+        foreach ($cart->getItems() as $item) {
+            if (in_array($item->getId(), $selectedItems)) {
+                $itemsToNotify[] = $item;
+            } 
+        }
+        $orders = $orderRegister->getSuppliersOrder($itemsToNotify);
+        foreach ($orders as $supplier => $items) {
+            $mailer->sendOrder($cart, $items, $items[0]->getSupplier()->getEmail());
+        }
+        return new JsonResponse($entitySerializer->serializeEntity($cart, 'cart'));
+    }
+
+    private function createItemsEntities(array $items, ProductRepository $productRepository, SupplierRepository $supplierRepository)
+    {
+        $newItems = [];
         $entityManager = $this->getDoctrine()->getManager();
         foreach ($items as $item) {
             $product = $productRepository->find($item['product']['id']);
@@ -50,21 +75,25 @@ class CartController extends AbstractController
                        ->setStock($item['stock'])
                        ->setSupplier($supplier);
             $entityManager->persist($itemEntity);
-            $cart->addItem($itemEntity);
+            $newItems[] = $itemEntity;
         }
         $entityManager->flush();
+        return $newItems;
     }
 
-    private function createCartEntity(User $user, \DateTime $deliveryDate)
+    private function createCartEntity(User $user, \DateTime $deliveryDate, array $items)
     {
         $cart = new Cart();
         $ts = $deliveryDate->getTimestamp();
         $datetime = (new \DateTime())->setTimestamp($ts);
         $entityManager = $this->getDoctrine()->getManager();
-
         $cart->setUser($user)
              ->setStatus("WAITING")
+             ->setSendingNumber(0)
              ->setDeliveryDate($datetime);
+        foreach ($items as $item) {
+            $cart->addItem($item);
+        }
         $entityManager->persist($cart);
         $entityManager->flush();
 

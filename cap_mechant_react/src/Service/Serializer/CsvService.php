@@ -32,7 +32,7 @@ class CsvService
     public function setOrderInCsv($order)
     {
         try {
-            $file = fopen($this->orderFileName, 'a');
+            $file = fopen($this->publicFolder . $this->orderFileName, 'a');
             $internalItems = $this->orderRegister->getInternalItems($order);
             foreach ($internalItems as $site => $items) {
                 $this->setHeader($file, $site, $order);
@@ -41,7 +41,9 @@ class CsvService
                     fputcsv($file, $formattedItem, $this->delimiter);
                 }
             }
-        } catch(\Exception $e) {}
+        } catch(\Exception $e) {
+            dump($e->getMessage());
+        }
         finally {
             fclose($file);
         }

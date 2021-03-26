@@ -63,6 +63,12 @@ class Cart
      */
     private $status;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"carts_read", "put_order"})
+     */
+    private $sendingNumber;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -135,6 +141,18 @@ class Cart
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getSendingNumber(): ?int
+    {
+        return $this->sendingNumber;
+    }
+
+    public function setSendingNumber(?int $sendingNumber): self
+    {
+        $this->sendingNumber = $sendingNumber;
 
         return $this;
     }

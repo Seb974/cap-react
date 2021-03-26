@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Commande pour livraison le {{ order.deliveryDate|date("d/m/Y") }}</title>
+		 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+            	  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+	<body>
+        <div class="container">
+            <p>
+                Bonjour {{ supplier.name }}, 
+            </p>
+            <br/>
+            <p>
+                Voici ci-dessous notre commande, pour une livraison le {{ order.deliveryDate|date("d/m/Y") }} à notre adresse :
+                <br/><br/>
+                <i>{{ order.user.metas.address }}</i><br/>
+                <i>{{ order.user.metas.address2 }}</i><br/>
+                <i>{{ order.user.metas.zipcode }} - {{ order.user.metas.city }}</i><br/>
+                <br/>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }} {{ item.product.unit.shorthand }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">Aucune donnée trouvée</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br/>
+            <p>A très bientôt {{ supplier.name }} !</p>
+            <br/>
+        </div>
+        <div class="container">
+            <p>{{ " " }}</p>
+        </div>
+        <div class="container">
+            <div class="row justify-content-end" style="margin-top: -25px; font-size: 0.9em;">
+                <div class="col align-self-end">
+                    <div>
+                        <strong>{{ order.user.name }}</strong><br/>
+                        {{ order.user.metas.address }}<br/>
+                        {{ order.user.metas.address2 }}<br/>
+                        {{ order.user.metas.zipcode }} - {{ order.user.metas.city }}<br/>
+                        {{ order.user.metas.phone }}
+                    </div>
+                </div>
+            </div>
+        </div>
+	</body>
+</html>
