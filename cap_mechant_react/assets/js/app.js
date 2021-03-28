@@ -31,6 +31,7 @@ import SupplierPage from './pages/Supplier/SupplierPage';
 import SuppliersPage from './pages/Supplier/SuppliersPage';
 import AdminRoute from './components/AdminRoute';
 import OrderPage from './pages/Order/OrderPage';
+import FullDesign from './pages/FullDesign/FullDesign';
 
 AuthActions.setup();
 
@@ -81,6 +82,7 @@ const App = () => {
                             <AdminRoute path="/users/:id" component={ UserPage } />
                             <AdminRoute path="/users" component={ UsersPage } />
                             <PrivateRoute path="/cart" component={ CartPage } />
+                            <PrivateRoute path="/fd" component={ FullDesign } />
                             <PrivateRoute path="/profile" component={ ProfilePage } />
                             <Route path="/login" component={ LoginPage } />
                             <Route path="/register" component={ RegisterPage } />
